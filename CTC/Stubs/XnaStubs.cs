@@ -1,6 +1,8 @@
 // Phase 2: Compile-time stubs for XNA types that are replaced in later phases.
 // Each stub is annotated with the phase that will replace it.
 // DO NOT add real logic here — these exist only so the project compiles during migration.
+#pragma warning disable CS0649 // stub fields intentionally left unassigned
+#pragma warning disable CS0067 // stub events intentionally left unused
 
 using System;
 using System.Numerics;
@@ -68,7 +70,7 @@ namespace CTC
     // -------------------------------------------------------------------------
     public class Texture2D : IDisposable
     {
-        /// <summary>Raw Raylib texture handle — populated when the real loader is implemented.</summary>
+        /// <summary>Raw Raylib texture handle — populated in Phase 9 (Sprite Loading).</summary>
         internal RaylibTexture2D Handle;
 
         // Parameterless constructor required for ContentManager.Load<Texture2D>().
@@ -118,7 +120,7 @@ namespace CTC
 
         public event EventHandler<PreparingDeviceSettingsEventArgs>? PreparingDeviceSettings;
 
-        public GraphicsDeviceManager(object game) { }
+        public GraphicsDeviceManager(object? game) { }
         public void ApplyChanges() { }
         public void Dispose() { }
     }
@@ -210,7 +212,7 @@ namespace CTC
     {
         public string RootDirectory { get; set; } = "Content";
 
-        public ContentManager(object serviceProvider) { }
+        public ContentManager(object? serviceProvider) { }
 
         public T? Load<T>(string assetName) where T : class => null;
 
@@ -219,7 +221,9 @@ namespace CTC
 
     // -------------------------------------------------------------------------
     // GameWindow — XNA OS-window handle stub.
-    // Replaced in Phase 3 (Game Loop) with Raylib window management.
+    // Phase 3 keeps this as a data carrier whose ClientBounds is kept in sync
+    // with Raylib.GetScreenWidth() / GetScreenHeight() each frame by Game.Run().
+    // Removed in Phase 3 as a dependency — the window is now a Raylib window.
     // -------------------------------------------------------------------------
     public class GameWindow
     {
@@ -228,6 +232,13 @@ namespace CTC
         public string Title { get; set; } = "SharpTibiaClient";
 
         public event EventHandler<EventArgs>? ClientSizeChanged;
+
+        /// <summary>
+        /// Fires the ClientSizeChanged event. Called by Game.Run() when
+        /// Raylib.IsWindowResized() returns true.
+        /// </summary>
+        public void RaiseClientSizeChanged() =>
+            ClientSizeChanged?.Invoke(this, EventArgs.Empty);
     }
 
     // -------------------------------------------------------------------------

@@ -6,7 +6,6 @@ namespace CTC
     {
         /// <summary>
         /// The main entry point for the application.
-        /// Phase 3 will launch the Raylib window from here.
         /// </summary>
         static void Main(string[] args)
         {
