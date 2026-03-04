@@ -6,7 +6,11 @@ using System.IO;
 
 namespace CTC
 {
-    public class TibiaGameData
+    /// <summary>
+    /// Phase 9: implements IDisposable to release all GPU textures held by
+    /// the <see cref="GameImage"/> objects it owns.
+    /// </summary>
+    public class TibiaGameData : IDisposable
     {
         // Phase 8: .dat signature constants.
         public const UInt32 DatSignature74 = 0x41360000u; // Tibia 7.4 .dat signature
@@ -323,6 +327,19 @@ namespace CTC
             Byte[] buffer = new Byte[ReadU16(SpriteFile)];
             SpriteFile.Read(buffer, 0, buffer.Length);
             return buffer;
+        }
+
+        /// <summary>
+        /// Phase 9: Disposes all owned <see cref="GameImage"/> objects, releasing their GPU
+        /// textures via <c>Raylib.UnloadTexture()</c>.  Also closes the open sprite file.
+        /// </summary>
+        public void Dispose()
+        {
+            foreach (GameImage img in Images.Values)
+                img.Dispose();
+            Images.Clear();
+
+            SpriteFile?.Dispose();
         }
     }
 }

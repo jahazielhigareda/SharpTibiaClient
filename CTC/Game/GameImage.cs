@@ -10,7 +10,12 @@ using PixelFormat = Raylib_cs.PixelFormat;
 
 namespace CTC
 {
-    public class GameImage
+    /// <summary>
+    /// Phase 9: implements IDisposable so every GPU texture created via
+    /// <see cref="GetTexture"/> is released with <c>Raylib.UnloadTexture()</c>
+    /// when the image is no longer needed.
+    /// </summary>
+    public class GameImage : IDisposable
     {
         public int ID;
         private TibiaGameData GameData;
@@ -19,11 +24,29 @@ namespace CTC
         // Phase 5: Raylib texture handle, lazily loaded from RGBA bytes.
         private Raylib_cs.Texture2D _handle;
         private bool _textureLoaded = false;
+        private bool _disposed = false;
 
         public GameImage(TibiaGameData GameData, int ID)
         {
             this.GameData = GameData;
             this.ID = ID;
+        }
+
+        /// <summary>
+        /// Phase 9: Releases the GPU texture if one was loaded.
+        /// Safe to call multiple times.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            if (_textureLoaded)
+            {
+                Raylib.UnloadTexture(_handle);
+                _handle = default;
+                _textureLoaded = false;
+            }
         }
 
         /// <summary>
@@ -34,6 +57,8 @@ namespace CTC
         /// </summary>
         public Raylib_cs.Texture2D GetTexture()
         {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(GameImage), $"Sprite #{ID} has already been disposed.");
             if (_textureLoaded)
                 return _handle;
 

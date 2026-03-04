@@ -10,7 +10,7 @@ namespace CTC
 {
     public delegate void ViewportChangedEventHandler(ClientViewport NewViewport);
 
-    public class GameDesktop : UIView
+    public class GameDesktop : UIView, IDisposable
     {
         public GameDesktop()
         {
@@ -265,5 +265,16 @@ namespace CTC
         }
 
         #endregion
+
+        /// <summary>
+        /// Phase 9: Disposes all client states (which dispose their TibiaGameData
+        /// and all GPU textures held by GameImage objects).
+        /// </summary>
+        public void Dispose()
+        {
+            foreach (ClientState state in Clients)
+                state.Dispose();
+            Clients.Clear();
+        }
     }
 }

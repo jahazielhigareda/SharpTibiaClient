@@ -130,7 +130,13 @@ namespace CTC
             State.Update(new GameTime());
         }
 
-        private void UnloadContent() { }
+        private void UnloadContent()
+        {
+            // Phase 9: dispose the desktop, which disposes all ClientState objects,
+            // which dispose their TibiaGameData, releasing all GPU textures.
+            Desktop?.Dispose();
+            Desktop = null;
+        }
 
         // ------------------------------------------------------------------ //
         // Phase 6 — Input                                                     //
@@ -188,6 +194,12 @@ namespace CTC
             Desktop?.Draw(UIContext.Window.ClientBounds);
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            // Phase 9: ensure GPU textures are released if Run() was not called
+            // (or if an exception prevented UnloadContent from running).
+            Desktop?.Dispose();
+            Desktop = null;
+        }
     }
 }
