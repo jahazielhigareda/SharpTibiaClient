@@ -157,7 +157,7 @@ namespace CTC
             if (Item.Type.IsStackable)
             {
                 String count = Item.Subtype.ToString();
-                Vector2 textSize = UIContext.StandardFont.MeasureString(count);
+                Vector2 textSize = Raylib.MeasureTextEx(UIContext.StandardFont, count, UIContext.StandardFontSize, 1f);
                 DrawBoldedText(Batch, count, new Vector2(rect.X + 32 - textSize.X - 1, rect.Y + 32 - textSize.Y + 1), false, Color.LightGray);
             }
         }
@@ -218,7 +218,7 @@ namespace CTC
 
             if (Centered)
             {
-                Vector2 TextSize = UIContext.StandardFont.MeasureString(Text);
+                Vector2 TextSize = Raylib.MeasureTextEx(UIContext.StandardFont, Text, UIContext.StandardFontSize, 1f);
                 Offset.X -= (int)(TextSize.X / 2);
             }
             DrawText(Batch, Text, new Vector2(Offset.X + 1, Offset.Y), Color.Black);
@@ -241,7 +241,7 @@ namespace CTC
             if (Creature.Name != "")
             {
                 GameSprite Sprite = GameData.GetCreatureSprite(Creature.Outfit.LookType);
-                Vector2 TextSize = UIContext.StandardFont.MeasureString(Creature.Name);
+                Vector2 TextSize = Raylib.MeasureTextEx(UIContext.StandardFont, Creature.Name, UIContext.StandardFontSize, 1f);
                 Color LifeColor = LifeColorForCreature(Creature);
                 
                 // Put at the center of the sprite

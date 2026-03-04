@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Numerics;
 using Raylib_cs;
 using Color = Raylib_cs.Color;
+using RaylibFont = Raylib_cs.Font;
 
 namespace CTC
 {
@@ -26,9 +27,6 @@ namespace CTC
         /// <summary>Stub graphics manager — replaced in Phase 5 (Rendering).</summary>
         public static GraphicsDeviceManager Graphics = null!; // assigned in Initialize()
 
-        /// <summary>Stub content manager — replaced in Phase 4 (Asset Loading).</summary>
-        public static ContentManager Content = null!; // assigned in Initialize()
-
         public static RasterizerState Rasterizer = null!; // assigned in Initialize()
 
         /// <summary>
@@ -39,16 +37,27 @@ namespace CTC
 
         public static UIView MouseFocusedPanel = null!; // null until a panel captures mouse
         public static Boolean SkinChanged;
-        public static UISkin Skin = null!;         // assigned in Load()
-        public static SpriteFont StandardFont = null!; // assigned in Load()
+        public static UISkin Skin = null!; // assigned in Load()
+
+        /// <summary>
+        /// Phase 4: real Raylib font replacing the XNA SpriteFont.
+        /// Loaded from Content/StandardFont.ttf in Load(); falls back to
+        /// Raylib.GetFontDefault() if the file is missing.
+        /// </summary>
+        public static RaylibFont StandardFont; // default(Font) until Load() runs
+
+        /// <summary>
+        /// Point size passed to Raylib.LoadFontEx() and Raylib.MeasureTextEx().
+        /// Approximates the original Tahoma Bold 8 pt at 96 DPI.
+        /// </summary>
+        public const int StandardFontSize = 12;
 
         public static Stack<Rectangle> ScissorStack = new Stack<Rectangle>();
 
-        public static void Initialize(GameWindow Window, GraphicsDeviceManager Graphics, ContentManager Content)
+        public static void Initialize(GameWindow Window, GraphicsDeviceManager Graphics)
         {
             UIContext.Window = Window;
             UIContext.Graphics = Graphics;
-            UIContext.Content = Content;
 
             Rasterizer = new RasterizerState()
             {
@@ -64,9 +73,17 @@ namespace CTC
 
         public static void Load()
         {
-            StandardFont = Content.Load<SpriteFont>("StandardFont")!; // Phase 4 provides real font
+            // Phase 4: load the TTF font via Raylib instead of XNA Content.Load<SpriteFont>.
+            const string fontPath = "Content/StandardFont.ttf";
+            StandardFont = Raylib.LoadFontEx(fontPath, StandardFontSize, null, 0);
+            if (!Raylib.IsFontReady(StandardFont))
+            {
+                Log.Warning($"StandardFont not found at '{fontPath}'; using Raylib default font.");
+                StandardFont = Raylib.GetFontDefault();
+            }
+
             Skin = new UISkin();
-            Skin.Load(null!); // Phase 4 provides real skin stream
+            Skin.Load(); // Phase 4: skin loaded via Raylib — no Stream parameter needed
             SkinChanged = true;
         }
 

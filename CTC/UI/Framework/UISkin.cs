@@ -71,13 +71,13 @@ namespace CTC
         Dictionary<UIElementType, UISkinElement> Types = new Dictionary<UIElementType, UISkinElement>();
         Dictionary<String, ColorGradient> Gradients = new Dictionary<string, ColorGradient>();
 
-        public Texture2D UISheet;
-        public Texture2D WhiteTexture;
+        /// <summary>Phase 4: real Raylib texture populated in Load(); Handle used by Phase 5 render calls.</summary>
+        public Texture2D UISheet = new Texture2D();
 
-        public UISkin()
-        {
-            UISheet = UIContext.Content.Load<Texture2D>("DefaultSkin");
-        }
+        /// <summary>Phase 4: 1x1 white texture for solid-colour fills; populated in Load().</summary>
+        public Texture2D WhiteTexture = new Texture2D();
+
+        public UISkin() { }
 
         public void AddElement(UISkinElement e)
         {
@@ -203,8 +203,26 @@ namespace CTC
             return cg;
         }
     
-        public void Load(System.IO.Stream File)
+        public void Load()
         {
+            // Phase 4: load skin sheet texture from disk using Raylib.
+            const string skinPath = "Content/DefaultSkin.bmp";
+            Image skinImg = Raylib.LoadImage(skinPath);
+            if (skinImg.Width > 0)
+            {
+                UISheet.Handle = Raylib.LoadTextureFromImage(skinImg);
+                Raylib.UnloadImage(skinImg);
+            }
+            else
+            {
+                Log.Warning($"DefaultSkin not found at '{skinPath}'; skin sheet will be empty.");
+            }
+
+            // Phase 4: create a 1x1 white texture for solid-colour fills.
+            Image whiteImg = Raylib.GenImageColor(1, 1, Color.White);
+            WhiteTexture.Handle = Raylib.LoadTextureFromImage(whiteImg);
+            Raylib.UnloadImage(whiteImg);
+
             //
             float[] cutoffs = { 0.00f, 0.05f, 0.33f, 0.99f, 1f };
             Color[] colors =
@@ -216,10 +234,6 @@ namespace CTC
                 new Color(0, 187, 0, 255)
             };
             Gradients["Health"] = new ColorGradient(cutoffs, colors);
-
-            // Create a texture to use as draw source for shapes
-            WhiteTexture = new Texture2D(UIContext.Graphics.GraphicsDevice, 1, 1);
-            WhiteTexture.SetData(new Color[] { Color.White });
 
             //
             UISkinElement e;

@@ -134,7 +134,7 @@ namespace CTC
         {
             if (Label != null)
             {
-                Vector2 Size = UIContext.StandardFont.MeasureString(Label);
+                Vector2 Size = Raylib.MeasureTextEx(UIContext.StandardFont, Label, UIContext.StandardFontSize, 1f);
                 Vector2 Offset = new Vector2(
                     (int)((ClientBounds.Width - Size.X) / 2),
                     (int)((ClientBounds.Height - Size.Y) / 2)

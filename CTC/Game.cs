@@ -75,16 +75,16 @@ namespace CTC
         {
             // UIContext is initialised against the now-live Raylib window so that
             // UIContext.SyncWindowSize picks up the correct initial dimensions.
+            // Phase 4: ContentManager removed; assets loaded via Raylib directly.
             UIContext.Initialize(
                 new GameWindow(),
-                new GraphicsDeviceManager(null),
-                new ContentManager(null) { RootDirectory = "Content" }
+                new GraphicsDeviceManager(null)
             );
         }
 
         private void LoadContent()
         {
-            // Phase 4 will replace Content.Load<T> stubs with real Raylib asset loading.
+            // Phase 4: UIContext.Load() loads font + skin sheet via Raylib.
             UIContext.Load();
 
             Desktop = new GameDesktop();

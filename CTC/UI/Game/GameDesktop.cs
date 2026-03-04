@@ -231,7 +231,7 @@ namespace CTC
             o += " RCTC";
 
             // Find the center of the string
-            Vector2 FontOrigin = UIContext.StandardFont.MeasureString(o);
+            Vector2 FontOrigin = Raylib.MeasureTextEx(UIContext.StandardFont, o, UIContext.StandardFontSize, 1f);
             FontOrigin.X = UIContext.Window.ClientBounds.Width - FontOrigin.X - 6;
             FontOrigin.Y = UIContext.Window.ClientBounds.Height - FontOrigin.Y - 4;
 

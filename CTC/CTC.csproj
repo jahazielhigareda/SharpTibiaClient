@@ -17,6 +17,13 @@
     <EmbeddedResource Include="TibiaProtocolMap.xml" />
   </ItemGroup>
 
+  <!-- Phase 4: raw assets copied to output directory; no XNA content pipeline. -->
+  <ItemGroup>
+    <Content Include="Content\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Raylib-cs" Version="6.0.0" />
   </ItemGroup>

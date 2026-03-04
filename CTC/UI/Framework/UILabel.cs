@@ -47,9 +47,9 @@ namespace CTC
 
             int RL = 0;
             if (TextAlignment == UITextAlignment.Center)
-                RL = (int)(Bounds.Width - UIContext.StandardFont.MeasureString(Text).X) / 2;
+                RL = (int)(Bounds.Width - Raylib.MeasureTextEx(UIContext.StandardFont, Text, UIContext.StandardFontSize, 1f).X) / 2;
             else if (TextAlignment == UITextAlignment.Right)
-                RL = (int)(Bounds.Width - UIContext.StandardFont.MeasureString(Text).X);
+                RL = (int)(Bounds.Width - Raylib.MeasureTextEx(UIContext.StandardFont, Text, UIContext.StandardFontSize, 1f).X);
 
             CurrentBatch.DrawString(
                 UIContext.StandardFont,

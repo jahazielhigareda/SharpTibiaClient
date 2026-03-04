@@ -10,6 +10,7 @@ using Raylib_cs;
 using RaylibColor = Raylib_cs.Color;
 using RaylibTexture2D = Raylib_cs.Texture2D;
 using RaylibRectangle = Raylib_cs.Rectangle;
+using RaylibFont = Raylib_cs.Font;
 
 namespace CTC
 {
@@ -187,8 +188,8 @@ namespace CTC
         public void Draw(Texture2D texture, Rectangle destinationRectangle, RaylibColor color) { }
         public void Draw(Texture2D texture, Vector2 position, RaylibColor color) { }
 
-        public void DrawString(SpriteFont font, string text, Vector2 position, RaylibColor color) { }
-        public void DrawString(SpriteFont font, string text, Vector2 position,
+        public void DrawString(RaylibFont font, string text, Vector2 position, RaylibColor color) { }
+        public void DrawString(RaylibFont font, string text, Vector2 position,
                                RaylibColor color, float rotation, Vector2 origin,
                                float scale, SpriteEffects effects, float layerDepth) { }
 
@@ -196,28 +197,9 @@ namespace CTC
     }
 
     // -------------------------------------------------------------------------
-    // SpriteFont — XNA bitmap font stub.
-    // Replaced in Phase 4 (Asset Loading) with Raylib font loading.
+    // SpriteFont — REMOVED in Phase 4. Replaced by Raylib_cs.Font throughout.
+    // ContentManager — REMOVED in Phase 4. Assets loaded directly via Raylib.
     // -------------------------------------------------------------------------
-    public class SpriteFont
-    {
-        public Vector2 MeasureString(string text) => new Vector2(text.Length * 8f, 12f);
-    }
-
-    // -------------------------------------------------------------------------
-    // ContentManager — XNA content pipeline stub.
-    // Replaced in Phase 4 (Asset Loading) with direct Raylib asset calls.
-    // -------------------------------------------------------------------------
-    public class ContentManager : IDisposable
-    {
-        public string RootDirectory { get; set; } = "Content";
-
-        public ContentManager(object? serviceProvider) { }
-
-        public T? Load<T>(string assetName) where T : class => null;
-
-        public void Dispose() { }
-    }
 
     // -------------------------------------------------------------------------
     // GameWindow — XNA OS-window handle stub.
