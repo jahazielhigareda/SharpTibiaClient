@@ -1,0 +1,22 @@
+<Solution>
+  <Project Path="mtanksl.OpenTibia.Common/mtanksl.OpenTibia.Common.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data.Common/mtanksl.OpenTibia.Data.Common.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data.InMemory/mtanksl.OpenTibia.Data.InMemory.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data.MsSql/mtanksl.OpenTibia.Data.MsSql.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data.MySql/mtanksl.OpenTibia.Data.MySql.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data.Oracle/mtanksl.OpenTibia.Data.Oracle.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data.PostgreSql/mtanksl.OpenTibia.Data.PostgreSql.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data.Sqlite/mtanksl.OpenTibia.Data.Sqlite.csproj" />
+  <Project Path="mtanksl.OpenTibia.Data/mtanksl.OpenTibia.Data.csproj" />
+  <Project Path="mtanksl.OpenTibia.FileFormats/mtanksl.OpenTibia.FileFormats.csproj" />
+  <Project Path="mtanksl.OpenTibia.Game.Common/mtanksl.OpenTibia.Game.Common.csproj" />
+  <Project Path="mtanksl.OpenTibia.Game/mtanksl.OpenTibia.Game.csproj" />
+  <Project Path="mtanksl.OpenTibia.GameData/mtanksl.OpenTibia.GameData.csproj" />
+  <Project Path="mtanksl.OpenTibia.Host/mtanksl.OpenTibia.Host.csproj" />
+  <Project Path="mtanksl.OpenTibia.IO/mtanksl.OpenTibia.IO.csproj" />
+  <Project Path="mtanksl.OpenTibia.Network/mtanksl.OpenTibia.Network.csproj" />
+  <Project Path="mtanksl.OpenTibia.Plugins/mtanksl.OpenTibia.Plugins.csproj" />
+  <Project Path="mtanksl.OpenTibia.Security/mtanksl.OpenTibia.Security.csproj" />
+  <Project Path="mtanksl.OpenTibia.Tests/mtanksl.OpenTibia.Tests.csproj" />
+  <Project Path="mtanksl.OpenTibia.Threading/mtanksl.OpenTibia.Threading.csproj" />
+</Solution>
