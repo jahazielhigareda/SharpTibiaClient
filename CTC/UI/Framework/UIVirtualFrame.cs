@@ -100,17 +100,9 @@ namespace CTC
             }
         }
 
-        protected override void DrawBackground(SpriteBatch CurrentBatch)
+        protected override void DrawBackground()
         {
             // do nothing
         }
-
-        /*
-        protected override void DrawBackgroundChildren(SpriteBatch CurrentBatch, Rectangle BoundingBox)
-        {
-            base.DrawBackgroundChildren(CurrentBatch,
-                new Rectangle(0, VirtualBounds.Y, Bounds.Width, Bounds.Height));
-        }
-         */
     }
 }

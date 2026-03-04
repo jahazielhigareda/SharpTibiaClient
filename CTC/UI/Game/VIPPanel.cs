@@ -77,26 +77,5 @@ namespace CTC
                 ContentView.AddSubview(Label);
             }
         }
-        
-        /*
-        protected override void DrawContent(SpriteBatch CurrentBatch)
-        {
-            Vector2 pos = new Vector2(0, 0);
-            foreach (ClientCreature vip in Viewport.VIPList.Values)
-            {
-                if (vip.Online == false)
-                    continue;
-
-                CurrentBatch.DrawString(
-                    UIContext.StandardFont, vip.Name, ScreenCoordinate(pos),
-                    (vip.Online ? Color.Lime : Color.Red),
-                    0.0f, new Vector2(0.0f, 0.0f),
-                    1.0f, SpriteEffects.None, 0.5f
-                );
-
-                pos.Y += 16;
-            }
-        }
-        */
     }
 }

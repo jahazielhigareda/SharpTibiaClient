@@ -166,19 +166,17 @@ namespace CTC
 
         #region Drawing
 
-        protected override void DrawBorder(SpriteBatch CurrentBatch)
+        protected override void DrawBorder()
         {
-            base.DrawBorder(CurrentBatch);
+            base.DrawBorder();
 
             if (Name != "")
             {
                 Vector2 pos = new Vector2(ScreenBounds.X + 5, ScreenBounds.Y + 2);
 
-                CurrentBatch.DrawString(
+                Raylib.DrawTextEx(
                     UIContext.StandardFont, Name, pos,
-                    Color.LightGray,
-                    0.0f, new Vector2(0.0f, 0.0f),
-                    1.0f, SpriteEffects.None, 0.5f
+                    UIContext.StandardFontSize, 1f, Color.LightGray
                 );
             }
         }

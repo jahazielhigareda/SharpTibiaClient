@@ -34,8 +34,6 @@ namespace CTC
         ChatPanel Chat;
         GameFrame Frame;
 
-        SpriteBatch ForegroundBatch;
-
         protected ClientState ActiveClient
         {
             get
@@ -92,16 +90,12 @@ namespace CTC
         /// <summary>
         /// The game window was resized
         /// </summary>
-        /// <param name="o"></param>
-        /// <param name="args"></param>
         void OnResize(object o, EventArgs args)
         {
             System.Console.WriteLine("Game Window was resized!");
             if (UIContext.Window.ClientBounds.Height > 0 && UIContext.Window.ClientBounds.Width > 0)
             {
-                // Update the context size
                 UIContext.GameWindowSize = UIContext.Window.ClientBounds;
-
                 NeedsLayout = true;
             }
         }
@@ -109,14 +103,11 @@ namespace CTC
         /// <summary>
         /// We override this to handle captured devices
         /// </summary>
-        /// <param name="mouse"></param>
-        /// <returns></returns>
         public override bool MouseLeftClick(MouseState mouse)
         {
             if (UIContext.MouseFocusedPanel != null)
                 return UIContext.MouseFocusedPanel.MouseLeftClick(mouse);
 
-            // We use a copy so that event handling can modify the list
             List<UIView> SubviewListCopy = new List<UIView>(Children);
             foreach (UIView subview in SubviewListCopy)
             {
@@ -130,7 +121,6 @@ namespace CTC
 
         public override bool MouseMove(MouseState mouse)
         {
-            // To get mouse move events you must capture the mouse first
             if (UIContext.MouseFocusedPanel != null)
                 return UIContext.MouseFocusedPanel.MouseMove(mouse);
             return false;
@@ -154,11 +144,9 @@ namespace CTC
 
         public override void LayoutSubviews()
         {
-            // Change the size of this view
             Bounds.Width = UIContext.GameWindowSize.Width;
             Bounds.Height = UIContext.GameWindowSize.Height;
 
-            // Resize the sidebar to fit
             Sidebar.Bounds = new Rectangle
             {
                 X = ClientBounds.Width - Sidebar.FullBounds.Width,
@@ -191,7 +179,6 @@ namespace CTC
             UIContext.Update(Time);
 
             LFPS.Enqueue(DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
-            // Remove ticks older than one second
             while (LFPS.Count > 0 && LFPS.First() < DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - 1000)
                 LFPS.Dequeue();
 
@@ -203,10 +190,11 @@ namespace CTC
 
         #region Drawing Code
 
-        public override void Draw(SpriteBatch NullBatch, Rectangle BoundingBox)
+        /// <summary>
+        /// Phase 5: Draw uses Raylib directly — no SpriteBatch or ForegroundBatch.
+        /// </summary>
+        public override void Draw(Rectangle BoundingBox)
         {
-            ForegroundBatch.Begin();
-
             // Count the FPS
             GFPS.Enqueue(DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond);
             while (GFPS.Count > 0 && GFPS.First() < DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond - 1000)
@@ -214,32 +202,26 @@ namespace CTC
 
             DrawFPS();
 
-            // Draw UI
-            DrawBackgroundChildren(ForegroundBatch, Bounds);
-            DrawForegroundChildren(ForegroundBatch, Bounds);
-            // End draw UI
-
-            ForegroundBatch.End();
+            // Draw UI children (each child applies its own scissor via Raylib.BeginScissorMode)
+            DrawBackgroundChildren(Bounds);
+            DrawForegroundChildren(Bounds);
         }
 
         protected void DrawFPS()
         {
-
             string o = "";
             o += " LFPS: " + LFPS.Count;
             o += " GFPS: " + GFPS.Count;
             o += " RCTC";
 
-            // Find the center of the string
-            Vector2 FontOrigin = Raylib.MeasureTextEx(UIContext.StandardFont, o, UIContext.StandardFontSize, 1f);
-            FontOrigin.X = UIContext.Window.ClientBounds.Width - FontOrigin.X - 6;
-            FontOrigin.Y = UIContext.Window.ClientBounds.Height - FontOrigin.Y - 4;
+            // Measure text to right-align it
+            Vector2 textSize = Raylib.MeasureTextEx(UIContext.StandardFont, o, UIContext.StandardFontSize, 1f);
+            Vector2 pos = new Vector2(
+                UIContext.Window.ClientBounds.Width - textSize.X - 6,
+                UIContext.Window.ClientBounds.Height - textSize.Y - 4
+            );
 
-            // Draw the string
-            ForegroundBatch.DrawString(
-                UIContext.StandardFont, o, FontOrigin,
-                Color.Lime, 0.0f, new Vector2(0.0f, 0.0f),
-                1.0f, SpriteEffects.None, 0.5f);
+            Raylib.DrawTextEx(UIContext.StandardFont, o, pos, UIContext.StandardFontSize, 1f, Color.Lime);
         }
 
         #endregion
@@ -249,7 +231,7 @@ namespace CTC
 
         public void Load()
         {
-            ForegroundBatch = new SpriteBatch(UIContext.Graphics.GraphicsDevice);
+            // Phase 5: ForegroundBatch removed; drawing goes directly through Raylib.
         }
 
         public void CreatePanels()
@@ -267,11 +249,7 @@ namespace CTC
 
             Chat = new ChatPanel();
             Chat.Bounds.Height = 180;
-            // Chat.Margin.Right = 10;
             AddSubview(Chat);
-
-            // Register listeners
-            // ActiveViewportChanged += Chat.OnNewState;
         }
 
         #endregion

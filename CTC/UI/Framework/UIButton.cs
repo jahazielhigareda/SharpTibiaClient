@@ -130,7 +130,7 @@ namespace CTC
             return true;
         }
 
-        protected override void DrawContent(SpriteBatch CurrentBatch)
+        protected override void DrawContent()
         {
             if (Label != null)
             {
@@ -140,11 +140,9 @@ namespace CTC
                     (int)((ClientBounds.Height - Size.Y) / 2)
                 );
 
-                CurrentBatch.DrawString(
+                Raylib.DrawTextEx(
                     UIContext.StandardFont, Label, ScreenCoordinate(Offset),
-                    Color.LightGray,
-                    0.0f, new Vector2(0.0f, 0.0f),
-                    1.0f, SpriteEffects.None, 0.5f
+                    UIContext.StandardFontSize, 1f, Color.LightGray
                 );
             }
         }

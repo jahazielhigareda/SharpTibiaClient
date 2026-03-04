@@ -75,11 +75,8 @@ namespace CTC
         {
             // UIContext is initialised against the now-live Raylib window so that
             // UIContext.SyncWindowSize picks up the correct initial dimensions.
-            // Phase 4: ContentManager removed; assets loaded via Raylib directly.
-            UIContext.Initialize(
-                new GameWindow(),
-                new GraphicsDeviceManager(null)
-            );
+            // Phase 5: GraphicsDeviceManager removed; UIContext no longer holds it.
+            UIContext.Initialize(new GameWindow());
         }
 
         private void LoadContent()
@@ -156,14 +153,12 @@ namespace CTC
         }
 
         /// <summary>
-        /// Per-frame draw. Phase 5 will replace the SpriteBatch stub draw calls
-        /// with direct Raylib draw calls; draw is already wrapped inside
-        /// BeginDrawing/EndDrawing by Run().
+        /// Per-frame draw. Phase 5: all SpriteBatch calls replaced with Raylib direct calls;
+        /// draw is already wrapped inside BeginDrawing/EndDrawing by Run().
         /// </summary>
         private void Draw(GameTime time)
         {
-            // SpriteBatch is a stub in this phase; GameDesktop.Draw uses its own batch.
-            Desktop?.Draw(null!, UIContext.Window.ClientBounds);
+            Desktop?.Draw(UIContext.Window.ClientBounds);
         }
 
         public void Dispose()

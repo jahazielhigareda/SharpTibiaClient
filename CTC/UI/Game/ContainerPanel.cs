@@ -109,9 +109,9 @@ namespace CTC
 
         #region Drawing
 
-        protected override void BeginDraw()
+        public override void Draw(Rectangle BoundingBox)
         {
-            // Create the renderer if required (and propagate it)
+            // Phase 5: lazily create the renderer on first draw (replaces BeginDraw override).
             if (Renderer == null)
             {
                 Renderer = new GameRenderer(Viewport.GameData);
@@ -120,7 +120,7 @@ namespace CTC
                     Button.Renderer = Renderer;
             }
 
-            base.BeginDraw();
+            base.Draw(BoundingBox);
         }
 
         #endregion

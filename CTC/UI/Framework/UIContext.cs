@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Numerics;
 using Raylib_cs;
 using Color = Raylib_cs.Color;
@@ -23,11 +21,6 @@ namespace CTC
         /// via SyncWindowSize().
         /// </summary>
         public static Rectangle GameWindowSize;
-
-        /// <summary>Stub graphics manager — replaced in Phase 5 (Rendering).</summary>
-        public static GraphicsDeviceManager Graphics = null!; // assigned in Initialize()
-
-        public static RasterizerState Rasterizer = null!; // assigned in Initialize()
 
         /// <summary>
         /// The time elapsed in the game. Updated each frame from Raylib timing
@@ -54,15 +47,9 @@ namespace CTC
 
         public static Stack<Rectangle> ScissorStack = new Stack<Rectangle>();
 
-        public static void Initialize(GameWindow Window, GraphicsDeviceManager Graphics)
+        public static void Initialize(GameWindow Window)
         {
             UIContext.Window = Window;
-            UIContext.Graphics = Graphics;
-
-            Rasterizer = new RasterizerState()
-            {
-                ScissorTestEnable = true
-            };
 
             // Sync window size immediately from Raylib if the window is already open.
             int w = Raylib.GetScreenWidth();

@@ -24,6 +24,11 @@
     </Content>
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Phase 5: required for GameImage.GetTexture() which pins RGBA bytes into a Raylib Image struct. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Raylib-cs" Version="6.0.0" />
   </ItemGroup>

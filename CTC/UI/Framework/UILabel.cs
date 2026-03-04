@@ -40,7 +40,7 @@ namespace CTC
             _Text = Text;
         }
 
-        protected override void DrawContent(SpriteBatch CurrentBatch)
+        protected override void DrawContent()
         {
             if (Text == "")
                 return;
@@ -51,11 +51,11 @@ namespace CTC
             else if (TextAlignment == UITextAlignment.Right)
                 RL = (int)(Bounds.Width - Raylib.MeasureTextEx(UIContext.StandardFont, Text, UIContext.StandardFontSize, 1f).X);
 
-            CurrentBatch.DrawString(
+            Raylib.DrawTextEx(
                 UIContext.StandardFont,
                 _Text,
                 ScreenCoordinate(RL, 0),
-                TextColor
+                UIContext.StandardFontSize, 1f, TextColor
             );
         }
     }

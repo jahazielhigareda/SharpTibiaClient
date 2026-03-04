@@ -66,24 +66,24 @@ namespace CTC
     }
 
     // -------------------------------------------------------------------------
-    // Texture2D — XNA reference-type texture stub.
-    // Replaced in Phase 5 (Rendering Layer) and Phase 9 (Sprite Loading).
+    // Texture2D — wrapper around a Raylib texture handle.
+    // The Handle field is populated in Phase 5 (GameImage) or Phase 4 (UISkin).
     // -------------------------------------------------------------------------
     public class Texture2D : IDisposable
     {
-        /// <summary>Raw Raylib texture handle — populated in Phase 9 (Sprite Loading).</summary>
-        internal RaylibTexture2D Handle;
+        /// <summary>Phase 4/5: real Raylib texture handle.</summary>
+        public RaylibTexture2D Handle;
 
-        // Parameterless constructor required for ContentManager.Load<Texture2D>().
         public Texture2D() { }
 
-        // XNA-style constructor signatures kept so existing code compiles.
-        public Texture2D(GraphicsDevice device, int width, int height) { }
-        public Texture2D(GraphicsDevice device, int width, int height, bool mipmap, SurfaceFormat format) { }
-
-        public void SetData<T>(T[] data) where T : struct { }
-
-        public void Dispose() { }
+        public void Dispose()
+        {
+            if (Handle.Id != 0)
+            {
+                Raylib.UnloadTexture(Handle);
+                Handle = default;
+            }
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -98,114 +98,9 @@ namespace CTC
     }
 
     // -------------------------------------------------------------------------
-    // GraphicsDevice — XNA GPU device stub.
-    // Replaced in Phase 3 (Game Loop) / Phase 5 (Rendering).
-    // -------------------------------------------------------------------------
-    public class GraphicsDevice
-    {
-        public Rectangle ScissorRectangle { get; set; }
-        public void Clear(RaylibColor color) { }
-        public void SetRenderTarget(RenderTarget2D? target) { }
-    }
-
-    // -------------------------------------------------------------------------
-    // GraphicsDeviceManager — XNA display setup stub.
-    // Replaced in Phase 3 (Game Loop) with Raylib.InitWindow().
-    // -------------------------------------------------------------------------
-    public class GraphicsDeviceManager : IDisposable
-    {
-        public int PreferredBackBufferWidth  { get; set; } = 1280;
-        public int PreferredBackBufferHeight { get; set; } = 800;
-        public bool SynchronizeWithVerticalRetrace { get; set; }
-        public GraphicsDevice GraphicsDevice { get; } = new GraphicsDevice();
-
-        public event EventHandler<PreparingDeviceSettingsEventArgs>? PreparingDeviceSettings;
-
-        public GraphicsDeviceManager(object? game) { }
-        public void ApplyChanges() { }
-        public void Dispose() { }
-    }
-
-    // -------------------------------------------------------------------------
-    // PreparingDeviceSettingsEventArgs — used in Game.cs PrepareDevice callback.
-    // Removed in Phase 3 (Game Loop).
-    // -------------------------------------------------------------------------
-    public class PreparingDeviceSettingsEventArgs : EventArgs
-    {
-        public GraphicsDeviceInformation GraphicsDeviceInformation { get; } = new GraphicsDeviceInformation();
-    }
-
-    public class GraphicsDeviceInformation
-    {
-        public PresentationParameters PresentationParameters { get; } = new PresentationParameters();
-    }
-
-    public class PresentationParameters
-    {
-        public RenderTargetUsage RenderTargetUsage { get; set; }
-    }
-
-    // -------------------------------------------------------------------------
-    // RasterizerState — XNA pipeline state stub.
-    // Replaced in Phase 5 (Rendering) with Raylib's built-in scissor support.
-    // -------------------------------------------------------------------------
-    public class RasterizerState
-    {
-        public bool ScissorTestEnable { get; set; }
-    }
-
-    // -------------------------------------------------------------------------
-    // SpriteSortMode — XNA rendering sort mode enum stub.
-    // Removed in Phase 5 (Rendering).
-    // -------------------------------------------------------------------------
-    public enum SpriteSortMode { Deferred, Immediate, Texture, BackToFront, FrontToBack }
-
-    // -------------------------------------------------------------------------
-    // BlendState, SamplerState, DepthStencilState — XNA pipeline state stubs.
-    // Removed in Phase 5 (Rendering).
-    // -------------------------------------------------------------------------
-    public class BlendState    { public static readonly BlendState AlphaBlend = new BlendState(); }
-    public class SamplerState  { public static readonly SamplerState LinearClamp = new SamplerState(); }
-    public class DepthStencilState { public static readonly DepthStencilState Default = new DepthStencilState(); }
-
-    // -------------------------------------------------------------------------
-    // SpriteBatch — XNA 2-D sprite renderer stub.
-    // Replaced in Phase 5 (Rendering) with direct Raylib draw calls.
-    // -------------------------------------------------------------------------
-    public class SpriteBatch : IDisposable
-    {
-        public GraphicsDevice GraphicsDevice { get; } = new GraphicsDevice();
-
-        public SpriteBatch(GraphicsDevice device) { }
-
-        public void Begin() { }
-        public void Begin(SpriteSortMode sortMode, BlendState? blend = null,
-                          SamplerState? sampler = null, DepthStencilState? depth = null,
-                          RasterizerState? rasterizer = null) { }
-        public void End() { }
-
-        public void Draw(Texture2D texture, Vector2 position, Rectangle sourceRectangle, RaylibColor color) { }
-        public void Draw(Texture2D texture, Rectangle destinationRectangle, RaylibColor color) { }
-        public void Draw(Texture2D texture, Vector2 position, RaylibColor color) { }
-
-        public void DrawString(RaylibFont font, string text, Vector2 position, RaylibColor color) { }
-        public void DrawString(RaylibFont font, string text, Vector2 position,
-                               RaylibColor color, float rotation, Vector2 origin,
-                               float scale, SpriteEffects effects, float layerDepth) { }
-
-        public void Dispose() { }
-    }
-
-    // -------------------------------------------------------------------------
-    // SpriteFont — REMOVED in Phase 4. Replaced by Raylib_cs.Font throughout.
-    // ContentManager — REMOVED in Phase 4. Assets loaded directly via Raylib.
-    // -------------------------------------------------------------------------
-
-    // -------------------------------------------------------------------------
     // GameWindow — XNA OS-window handle stub.
     // Phase 3 keeps this as a data carrier whose ClientBounds is kept in sync
     // with Raylib.GetScreenWidth() / GetScreenHeight() each frame by Game.Run().
-    // Removed in Phase 3 as a dependency — the window is now a Raylib window.
     // -------------------------------------------------------------------------
     public class GameWindow
     {
@@ -245,25 +140,4 @@ namespace CTC
     }
 
     public enum ButtonState { Released, Pressed }
-
-    // -------------------------------------------------------------------------
-    // Surface / depth / target enums — XNA rendering enum stubs.
-    // Removed in Phase 5 (Rendering).
-    // -------------------------------------------------------------------------
-    public enum SurfaceFormat  { Color, Bgr565, Bgra5551, Bgra4444, Dxt1, Dxt3, Dxt5, Rgba1010102 }
-    public enum DepthFormat    { None, Depth16, Depth24, Depth24Stencil8 }
-    public enum RenderTargetUsage { DiscardContents, PreserveContents, PlatformContents }
-    public enum SpriteEffects  { None = 0, FlipHorizontally = 1, FlipVertically = 2 }
-
-    // -------------------------------------------------------------------------
-    // RenderTarget2D — XNA off-screen render target stub.
-    // Replaced in Phase 5 (Rendering) with Raylib RenderTexture2D.
-    // -------------------------------------------------------------------------
-    public class RenderTarget2D : Texture2D
-    {
-        public RenderTarget2D(GraphicsDevice device, int width, int height, bool mipmap,
-                              SurfaceFormat format, DepthFormat depthFormat,
-                              int multiSampleCount, RenderTargetUsage usage)
-            : base(device, width, height, mipmap, format) { }
-    }
 }

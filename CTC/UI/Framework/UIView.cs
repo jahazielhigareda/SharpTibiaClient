@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +24,6 @@ namespace CTC
         private UIView _Parent;
 
         public UIElementType ElementType;
-        protected SpriteBatch Batch;
-        private Nullable<Rectangle> OldScissor;
         protected Boolean CropChildren = true;
         public Boolean Visible = true;
         public Boolean InteractionEnabled = true;
@@ -456,7 +454,6 @@ namespace CTC
             if (clip.Bottom > Screen.Height)
                 clip.Height = Screen.Height - clip.Y;
 
-            // TODO: Skip render phase?
             if (clip.Height < 0)
                 clip.Height = 0;
             if (clip.Width < 0)
@@ -465,122 +462,78 @@ namespace CTC
             return clip;
         }
 
-        protected virtual void BeginDraw()
-        {
-            // Create the batch if this is the first time we're being drawn
-            if (Batch == null)
-                Batch = new SpriteBatch(UIContext.Graphics.GraphicsDevice);
-
-            // Begin the batch
-            Batch.Begin(SpriteSortMode.Deferred, null, null, null, UIContext.Rasterizer);
-
-            // Set up the scissors for this view
-            Rectangle Screen = UIContext.GameWindowSize;
-            Screen.X = 0;
-            Screen.Y = 0;
-            if (Screen.Intersects(ScreenBounds))
-            {
-                OldScissor = Batch.GraphicsDevice.ScissorRectangle;
-                Batch.GraphicsDevice.ScissorRectangle = GetClipRectangle();
-            }
-            else
-                OldScissor = null;
-        }
-
-        protected virtual void EndDraw()
-        {
-            Batch.End();
-
-            // Reset the scissors
-            if (OldScissor != null)
-                Batch.GraphicsDevice.ScissorRectangle = OldScissor.Value;
-        }
-
         /// <summary>
-        /// Draws entire content of the panel, including children
+        /// Draws entire content of the panel, including children.
+        /// Phase 5: uses Raylib.BeginScissorMode/EndScissorMode instead of SpriteBatch.
         /// </summary>
-        /// <param name="CurrentBatch"></param>
-        public virtual void Draw(SpriteBatch CurrentBatch, Rectangle BoundingBox)
+        public virtual void Draw(Rectangle BoundingBox)
         {
             if (!Visible)
                 return;
-            //if (!(this is UIStackView))
             if (!BoundingBox.Overlaps(new Rectangle(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height)))
                 return;
 
-            BeginDraw();
+            Rectangle clip = GetClipRectangle();
 
-            DrawBackground(Batch);
-            DrawContent(Batch);
-            EndDraw();
+            // Draw background and content with scissor clipping
+            Raylib.BeginScissorMode(clip.X, clip.Y, clip.Width, clip.Height);
+            DrawBackground();
+            DrawContent();
+            Raylib.EndScissorMode();
 
-            // Draw the views that are behind the borders of this view
+            // Draw background children (they apply their own scissor recursively)
             if (ClipsSubviews)
                 UIContext.ScissorStack.Push(ScreenBounds);
-            DrawBackgroundChildren(Batch, BoundingBox);
-            
-            // Draw the borders etc. around this view
-            BeginDraw();
-            DrawBorder(Batch);
-            EndDraw();
+            DrawBackgroundChildren(BoundingBox);
 
-            // Draw the foreground elements of this view
-            DrawForegroundChildren(Batch, BoundingBox);
+            // Draw the border elements with the same clip as this view
+            Raylib.BeginScissorMode(clip.X, clip.Y, clip.Width, clip.Height);
+            DrawBorder();
+            Raylib.EndScissorMode();
+
+            // Draw foreground children
+            DrawForegroundChildren(BoundingBox);
             if (ClipsSubviews)
                 UIContext.ScissorStack.Pop();
         }
 
-        /// <summary>
-        /// Draws the actual content of this panel
-        /// </summary>
-        /// <param name="CurrentBatch"></param>
-        protected virtual void DrawContent(SpriteBatch CurrentBatch)
+        /// <summary>Draws the actual content of this panel.</summary>
+        protected virtual void DrawContent()
         {
         }
 
-        /// <summary>
-        /// Draws the background of the panel (no borders)
-        /// </summary>
-        /// <param name="CurrentBatch"></param>
-        protected virtual void DrawBackground(SpriteBatch CurrentBatch)
+        /// <summary>Draws the background of the panel (no borders).</summary>
+        protected virtual void DrawBackground()
         {
-            UIContext.Skin.DrawBackground(CurrentBatch, ElementType, ScreenBounds);
+            UIContext.Skin.DrawBackground(ElementType, ScreenBounds);
         }
 
-        /// <summary>
-        /// Draws the border of the panel
-        /// </summary>
-        /// <param name="CurrentBatch"></param>
-        protected virtual void DrawBorder(SpriteBatch CurrentBatch)
+        /// <summary>Draws the border of the panel.</summary>
+        protected virtual void DrawBorder()
         {
-            UIContext.Skin.DrawBox(CurrentBatch, ElementType, ScreenBounds);
+            UIContext.Skin.DrawBox(ElementType, ScreenBounds);
         }
 
         /// <summary>
         /// Draws the children of the panel with a ZOrder less than or equal to 0.
-        /// These views will be draw before the borders around the element etc. and
-        /// as such be behind them in the final output.
+        /// These views will be drawn before the borders around the element etc.
         /// </summary>
-        /// <param name="CurrentBatch"></param>
-        /// <param name="BoundingBox">If the subview does not intersect this area, it won't be drawn.</param>
-        protected virtual void DrawBackgroundChildren(SpriteBatch CurrentBatch, Rectangle BoundingBox)
+        protected virtual void DrawBackgroundChildren(Rectangle BoundingBox)
         {
             foreach (UIView Subview in Children)
                 if (Subview.ZOrder <= 0)
-                    Subview.Draw(CurrentBatch, BoundingBox);
+                    Subview.Draw(BoundingBox);
         }
 
         /// <summary>
         /// Draws the children of the panel with a ZOrder greater than 0.
         /// These views will be drawn above the border elements of this view.
         /// </summary>
-        /// <param name="CurrentBatch"></param>
-        /// <param name="BoundingBox">If the subview does not intersect this area, it won't be drawn.</param>
-        protected virtual void DrawForegroundChildren(SpriteBatch CurrentBatch, Rectangle BoundingBox)
+        protected virtual void DrawForegroundChildren(Rectangle BoundingBox)
         {
             foreach (UIView Subview in Children)
                 if (Subview.ZOrder > 0)
-                    Subview.Draw(CurrentBatch, BoundingBox);
+                    Subview.Draw(BoundingBox);
         }
 
         #endregion

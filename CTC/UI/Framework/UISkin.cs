@@ -92,7 +92,7 @@ namespace CTC
             return new Vector2(e[orientation].Width, e[orientation].Height);
         }
 
-        public void DrawBackground(SpriteBatch Batch, UIElementType type, Rectangle rect)
+        public void DrawBackground(UIElementType type, Rectangle rect)
         {
             if (!Types.ContainsKey(type))
                 return;
@@ -107,7 +107,7 @@ namespace CTC
                     pos.X = rect.X + e[UISkinOrientation.TopLeft].Width;
                     while (pos.X < rect.Right)
                     {
-                        Batch.Draw(UISheet, pos, e[UISkinOrientation.Center], Color.White);
+                        DrawTile(UISheet.Handle, e[UISkinOrientation.Center], pos);
                         pos.X += e[UISkinOrientation.Center].Width;
                     }
                     pos.Y += e[UISkinOrientation.Center].Height;
@@ -115,7 +115,7 @@ namespace CTC
             }
         }
 
-        public void DrawBox(SpriteBatch Batch, UIElementType type, Rectangle rect)
+        public void DrawBox(UIElementType type, Rectangle rect)
         {
             if (!Types.ContainsKey(type))
                 return;
@@ -127,7 +127,7 @@ namespace CTC
             if (e[UISkinOrientation.TopLeft].Width > 0 && e[UISkinOrientation.TopLeft].Height > 0)
             {
                 pos = new Vector2(rect.X, rect.Y);
-                Batch.Draw(UISheet, pos, e[UISkinOrientation.TopLeft], Color.White);
+                DrawTile(UISheet.Handle, e[UISkinOrientation.TopLeft], pos);
             }
             
             // Draw top
@@ -136,7 +136,7 @@ namespace CTC
                 pos = new Vector2(rect.X + e[UISkinOrientation.TopLeft].Width, rect.Y); 
                 while (pos.X < rect.Right)
                 {
-                    Batch.Draw(UISheet, pos, e[UISkinOrientation.Top], Color.White);
+                    DrawTile(UISheet.Handle, e[UISkinOrientation.Top], pos);
                     pos.X += e[UISkinOrientation.Top].Width;
                 }
             }
@@ -145,7 +145,7 @@ namespace CTC
             if (e[UISkinOrientation.TopRight].Width > 0 && e[UISkinOrientation.TopRight].Height > 0)
             {
                 pos = new Vector2(rect.Right - e[UISkinOrientation.TopRight].Width, rect.Y);
-                Batch.Draw(UISheet, pos, e[UISkinOrientation.TopRight], Color.White);
+                DrawTile(UISheet.Handle, e[UISkinOrientation.TopRight], pos);
             }
 
             // Draw center left
@@ -154,7 +154,7 @@ namespace CTC
                 pos = new Vector2(rect.X, rect.Y + e[UISkinOrientation.TopLeft].Height);
                 while (pos.Y < rect.Bottom)
                 {
-                    Batch.Draw(UISheet, pos, e[UISkinOrientation.Left], Color.White);
+                    DrawTile(UISheet.Handle, e[UISkinOrientation.Left], pos);
                     pos.Y += e[UISkinOrientation.Left].Height;
                 }
             }
@@ -165,7 +165,7 @@ namespace CTC
                 pos = new Vector2(rect.Right - e[UISkinOrientation.Right].Width, rect.Y + e[UISkinOrientation.TopRight].Height);
                 while (pos.Y < rect.Bottom)
                 {
-                    Batch.Draw(UISheet, pos, e[UISkinOrientation.Right], Color.White);
+                    DrawTile(UISheet.Handle, e[UISkinOrientation.Right], pos);
                     pos.Y += e[UISkinOrientation.Right].Height;
                 }
             }
@@ -174,7 +174,7 @@ namespace CTC
             if (e[UISkinOrientation.BottomLeft].Width > 0 && e[UISkinOrientation.BottomLeft].Height > 0)
             {
                 pos = new Vector2(rect.X, rect.Bottom - e[UISkinOrientation.BottomLeft].Height);
-                Batch.Draw(UISheet, pos, e[UISkinOrientation.BottomLeft], Color.White);
+                DrawTile(UISheet.Handle, e[UISkinOrientation.BottomLeft], pos);
             }
 
             // Draw bottom
@@ -183,7 +183,7 @@ namespace CTC
                 pos = new Vector2(rect.X + e[UISkinOrientation.BottomLeft].Width, rect.Bottom - e[UISkinOrientation.Bottom].Height);
                 while (pos.X < rect.Right)
                 {
-                    Batch.Draw(UISheet, pos, e[UISkinOrientation.Bottom], Color.White);
+                    DrawTile(UISheet.Handle, e[UISkinOrientation.Bottom], pos);
                     pos.X += e[UISkinOrientation.Bottom].Width;
                 }
             }
@@ -192,8 +192,18 @@ namespace CTC
             if (e[UISkinOrientation.BottomRight].Width > 0 && e[UISkinOrientation.BottomRight].Height > 0)
             {
                 pos = new Vector2(rect.Right - e[UISkinOrientation.BottomRight].Width, rect.Bottom - e[UISkinOrientation.BottomRight].Height);
-                Batch.Draw(UISheet, pos, e[UISkinOrientation.BottomRight], Color.White);
+                DrawTile(UISheet.Handle, e[UISkinOrientation.BottomRight], pos);
             }
+        }
+
+        /// <summary>Phase 5: draw one tile from the skin sheet at the given screen position.</summary>
+        private static void DrawTile(Raylib_cs.Texture2D sheet, Rectangle src, Vector2 pos)
+        {
+            Raylib.DrawTexturePro(
+                sheet,
+                src,
+                new Raylib_cs.Rectangle(pos.X, pos.Y, src.Width, src.Height),
+                Vector2.Zero, 0f, Color.White);
         }
 
         public ColorGradient Gradient(String Name)
@@ -438,14 +448,14 @@ namespace CTC
             AddElement(e);
         }
 
-        public void DrawRectangle(SpriteBatch Batch, Rectangle r, Color color)
+        public void DrawRectangle(Rectangle r, Color color)
         {
-            Batch.Draw(WhiteTexture, r, color);
+            Raylib.DrawRectangle(r.X, r.Y, r.Width, r.Height, color);
         }
 
-        public void DrawBorderedRectangle(SpriteBatch Batch, Rectangle r, Color color)
+        public void DrawBorderedRectangle(Rectangle r, Color color)
         {
-            Batch.Draw(WhiteTexture, r, color);
+            Raylib.DrawRectangle(r.X, r.Y, r.Width, r.Height, color);
         }
     }
 }

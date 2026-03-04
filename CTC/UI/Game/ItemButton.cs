@@ -37,19 +37,19 @@ namespace CTC
             return base.MouseLeftClick(mouse);
         }
 
-        protected override void DrawContent(SpriteBatch Batch)
+        protected override void DrawContent()
         {
-            Renderer.DrawInventorySlot(Batch, ScreenBounds);
+            Renderer?.DrawInventorySlot(ScreenBounds);
 
             if (Item != null)
-                Renderer.DrawInventoryItem(Batch, Item, ScreenClientBounds);
+                Renderer?.DrawInventoryItem(Item, ScreenClientBounds);
         }
     }
 
     /// <summary>
     /// Renders an inventory slot.
     /// This is different from the above in that it reads the Viewport to get
-    /// it's data, and it also draws a background image if there is no item
+    /// its data, and it also draws a background image if there is no item
     /// in that slot.
     /// </summary>
     class InventoryItemButton : ItemButton
@@ -69,25 +69,26 @@ namespace CTC
             Viewport = NewViewport;
         }
 
-        protected override void BeginDraw()
+        public override void Draw(Rectangle BoundingBox)
         {
+            // Phase 5: lazily create renderer on first draw (replaces BeginDraw override).
             if (Renderer == null && Viewport != null)
                 this.Renderer = new GameRenderer(Viewport.GameData);
 
-            base.BeginDraw();
+            base.Draw(BoundingBox);
         }
 
-        protected override void DrawContent(SpriteBatch Batch)
+        protected override void DrawContent()
         {
             if (Viewport != null)
             {
                 Item = Viewport.Inventory[(int)Slot];
 
-                base.DrawContent(Batch);
+                base.DrawContent();
 
                 if (Item == null)
                 {
-                    // TODO: Draw the background image
+                    // TODO: Draw the background image for empty slot
                 }
             }
         }
