@@ -30,9 +30,11 @@ namespace CTC
 
         List<ClientState> Clients = new List<ClientState>();
 
-        GameSidebar Sidebar;
-        ChatPanel Chat;
-        GameFrame Frame;
+        GameSidebar  Sidebar;
+        ChatPanel    Chat;
+        GameFrame    Frame;
+        // Phase 10: hotbar at the bottom of the game area.
+        HotbarPanel  Hotbar;
 
         protected ClientState ActiveClient
         {
@@ -167,6 +169,15 @@ namespace CTC
                 Width = Sidebar.FullBounds.Width
             }.Subtract(Sidebar.Margin);
 
+            // Phase 10: hotbar sits just above the chat panel.
+            Hotbar.Bounds = new Rectangle
+            {
+                X = ClientBounds.Left,
+                Y = ClientBounds.Height - Chat.FullBounds.Height - Hotbar.Bounds.Height - 2,
+                Width = Hotbar.Bounds.Width,
+                Height = Hotbar.Bounds.Height
+            };
+
             Chat.Bounds = new Rectangle
             {
                 X = ClientBounds.Top,
@@ -180,7 +191,7 @@ namespace CTC
                 X = ClientBounds.Top,
                 Y = ClientBounds.Left,
                 Width = ClientBounds.Width - Sidebar.FullBounds.Width,
-                Height = ClientBounds.Height - Chat.Bounds.Height
+                Height = ClientBounds.Height - Chat.Bounds.Height - Hotbar.Bounds.Height - 2
             }.Subtract(Frame.Margin);
 
             base.LayoutSubviews();
@@ -262,6 +273,10 @@ namespace CTC
             Chat = new ChatPanel();
             Chat.Bounds.Height = 180;
             AddSubview(Chat);
+
+            // Phase 10: HotbarPanel — 10 F-key slots above the chat panel.
+            Hotbar = new HotbarPanel();
+            AddSubview(Hotbar);
         }
 
         #endregion
