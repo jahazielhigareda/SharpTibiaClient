@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -34,12 +35,11 @@ namespace CTC
         #region Drawing Code
 
         public Color MakeColor(int id)
-        {	    
-            Color c = new Color();
-            c.B = (byte)((id % 6) / 5f * 255);
-            c.G = (byte)(((id / 6) % 6) / 5f * 255);
-            c.R = (byte)((id / 36f) / 6f * 255);
-            return c;
+        {
+            int b = (int)((id % 6) / 5f * 255);
+            int g = (int)(((id / 6) % 6) / 5f * 255);
+            int r = (int)((id / 36f) / 6f * 255);
+            return new Color(r, g, b, 255);
         }
 
         private void DrawImage(SpriteBatch Batch, GameImage Image, Rectangle dest, Color clr)
@@ -233,7 +233,7 @@ namespace CTC
             ColorGradient cg = UIContext.Skin.Gradient("Health");
             if (cg != null)
                 return cg.Sample(Creature.HealthPercent);
-            return new Color(255, 255, 255);
+            return new Color(255, 255, 255, 255);
         }
 
         public void DrawCreatureBars(SpriteBatch Batch, ClientCreature Creature, Vector2 Offset)

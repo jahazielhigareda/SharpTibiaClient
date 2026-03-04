@@ -2,98 +2,84 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
     /// <summary>
-    /// This is the main type for your game
+    /// Main game class. Inherits from XNA Game in the legacy code — replaced in Phase 3
+    /// with a Raylib-based game loop using Raylib.InitWindow / WindowShouldClose.
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class Game : IDisposable
     {
-        GraphicsDeviceManager Graphics;
+        // Phase 3: replace with Raylib window state
+        protected GraphicsDeviceManager Graphics;
+        protected ContentManager Content;
+        protected GameWindow Window;
+        protected GraphicsDevice GraphicsDevice => Graphics.GraphicsDevice;
+        protected bool IsFixedTimeStep { get; set; }
+        protected bool IsMouseVisible { get; set; }
 
-        GameDesktop Desktop;
-        MouseState LastMouseState;
+        private GameDesktop Desktop;
+        private bool _lastMouseLeftPressed;
 
         public Game()
         {
+            Window = new GameWindow();
+            Content = new ContentManager(null) { RootDirectory = "Content" };
             Graphics = new GraphicsDeviceManager(this);
-            
 
-            Graphics.PreparingDeviceSettings += PrepareDevice;
+            // Phase 3: PrepareDevice event removed — Raylib does not require it.
             Graphics.PreferredBackBufferWidth = 1280;
             Graphics.PreferredBackBufferHeight = 800;
-            Content.RootDirectory = "Content";
         }
 
         /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
+        /// Initializes game settings before the main loop.
+        /// Phase 3 will move window setup here via Raylib.InitWindow().
         /// </summary>
-        protected override void Initialize()
+        protected virtual void Initialize()
         {
-            base.Initialize();
-
-            // Setup the window
+            // Phase 3: IsFixedTimeStep → Raylib.SetTargetFPS(0) (uncapped)
             IsFixedTimeStep = false;
             Graphics.SynchronizeWithVerticalRetrace = false;
-            //graphics.GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.One;
-            //graphics.PreferWaitForVerticalTrace = false;
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
-
             Graphics.ApplyChanges();
         }
 
         /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
+        /// Loads all content. Phase 4 will replace Content.Load&lt;T&gt; with Raylib asset loading.
         /// </summary>
-        protected override void LoadContent()
+        protected virtual void LoadContent()
         {
-            // Initialize the context
             UIContext.Initialize(Window, Graphics, Content);
             UIContext.Load();
 
-            // Create the game frame
             Desktop = new GameDesktop();
             Desktop.Load();
             Desktop.CreatePanels();
 
-            // Initial layout of all views
             Desktop.LayoutSubviews();
             Desktop.NeedsLayout = true;
 
-            ///////////////////////////////////////////////////////////////////
-            // For debugging read a TMV file as input
-
+            // For debugging: read a TMV movie file as input.
             FileInfo file = new FileInfo("./Test.tmv");
-            Stream virtualStream = null;
-
+            Stream virtualStream;
             FileStream fileStream = file.OpenRead();
             if (file.Extension == ".tmv")
                 virtualStream = new System.IO.Compression.GZipStream(fileStream, System.IO.Compression.CompressionMode.Decompress);
             else
                 virtualStream = fileStream;
 
-            // Add the initial state
             TibiaMovieStream MovieStream = new TibiaMovieStream(virtualStream, file.Name);
             ClientState State = new ClientState(MovieStream);
 
             MovieStream.PlaybackSpeed = 50;
             State.ForwardTo(new TimeSpan(0, 30, 0));
 
-            // If fast-forwarded, client tab immediately,
-            // otherwise delay until we receive the login packet.
             if (State.Viewport.Player == null)
             {
                 State.Viewport.Login += delegate(ClientViewport Viewport)
@@ -107,75 +93,48 @@ namespace CTC
             }
 
             State.Update(new GameTime());
-            /*
-            while (MS.Elapsed.TotalMinutes < 0 || MS.Elapsed.Seconds < 0)
-                Protocol.parsePacket(InStream.Read());
-             */
         }
 
         /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
+        /// Unloads content. Phase 5 will add Raylib texture/font unloading here.
         /// </summary>
-        protected override void UnloadContent()
+        protected virtual void UnloadContent() { }
+
+        /// <summary>
+        /// Per-frame update. Phase 3 replaces GameTime with Raylib.GetFrameTime();
+        /// Phase 6 replaces Mouse.GetState() with Raylib mouse API.
+        /// </summary>
+        protected virtual void Update(GameTime gameTime)
         {
-            // TODO: Unload any non ContentManager content here
+            // Phase 6: replace with Raylib.IsMouseButtonPressed / GetMousePosition()
+            Desktop?.Update(gameTime);
         }
 
         /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
+        /// Per-frame draw. Phase 3 wraps this with Raylib.BeginDrawing/EndDrawing;
+        /// Phase 5 replaces GraphicsDevice.Clear with Raylib.ClearBackground.
         /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            MouseState mouse = Mouse.GetState();
-
-            // Do input handling
-
-            // First check left mouse button
-            if (LastMouseState != null)
-            {
-                if (LastMouseState.LeftButton != mouse.LeftButton)
-                    Desktop.MouseLeftClick(mouse);
-            }
-
-            // Send the mouse moved event
-            if (LastMouseState.X != mouse.X || LastMouseState.Y != mouse.Y)
-                Desktop.MouseMove(mouse);
-
-            // Save the state for next frame so we can see what changed
-            LastMouseState = mouse;
-
-            // Update the game state
-            Desktop.Update(gameTime);
-
-            base.Update(gameTime);
-        }
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
+        protected virtual void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
-            try
-            {
-                Desktop.Draw(null, Window.ClientBounds);
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            base.Draw(gameTime);
+            Desktop?.Draw(null, Window.ClientBounds);
         }
 
-        protected void PrepareDevice(object sender, PreparingDeviceSettingsEventArgs e)
+        /// <summary>
+        /// Runs the game loop. Phase 3 replaces this with a Raylib window loop.
+        /// </summary>
+        public void Run()
         {
-            e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+            Initialize();
+            LoadContent();
+            // Phase 3: while (!Raylib.WindowShouldClose()) { Update(); Draw(); }
+        }
+
+        public void Dispose()
+        {
+            UnloadContent();
+            Graphics.Dispose();
+            Content.Dispose();
         }
     }
 }

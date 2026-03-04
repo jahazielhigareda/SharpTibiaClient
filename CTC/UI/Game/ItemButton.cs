@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -31,7 +32,7 @@ namespace CTC
             HighlightType = UIElementType.InventorySlot;
         }
 
-        public override bool MouseLeftClick(Microsoft.Xna.Framework.Input.MouseState mouse)
+        public override bool MouseLeftClick(MouseState mouse)
         {
             return base.MouseLeftClick(mouse);
         }

@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -239,7 +238,7 @@ namespace CTC
             // Draw the string
             ForegroundBatch.DrawString(
                 UIContext.StandardFont, o, FontOrigin,
-                Color.LightGreen, 0.0f, new Vector2(0.0f, 0.0f),
+                Color.Lime, 0.0f, new Vector2(0.0f, 0.0f),
                 1.0f, SpriteEffects.None, 0.5f);
         }
 
