@@ -104,5 +104,18 @@ namespace CTC
         {
             // do nothing
         }
+
+        /// <summary>
+        /// Phase 6: scroll-wheel moves the scrollbar when the mouse is over this frame.
+        /// Negative delta = scroll down (content moves up); positive = scroll up.
+        /// The ScrollbarPosition setter already clamps the value to [0, ScrollbarLength].
+        /// </summary>
+        public override bool MouseScroll(MouseState mouse, int delta)
+        {
+            // Scroll step: roughly one "row" per wheel notch.
+            const int StepPerNotch = 20;
+            Scrollbar.ScrollbarPosition -= delta * StepPerNotch;
+            return true;
+        }
     }
 }

@@ -356,6 +356,24 @@ namespace CTC
             return false;
         }
 
+        /// <summary>
+        /// Phase 6: dispatches a scroll-wheel event.
+        /// <paramref name="delta"/> is positive when scrolling up, negative when scrolling down.
+        /// Returns true if the event was consumed.
+        /// </summary>
+        public virtual bool MouseScroll(MouseState mouse, int delta)
+        {
+            // Use a defensive copy so that scroll handlers can safely modify the child list.
+            List<UIView> SubviewListCopy = new List<UIView>(Children);
+            foreach (UIView subview in SubviewListCopy)
+            {
+                if (subview.AcceptsMouseEvent(mouse))
+                    if (subview.MouseScroll(mouse, delta))
+                        return true;
+            }
+            return false;
+        }
+
         #endregion
 
         public Vector2 ClientCoordinate(Vector2 coordinate)

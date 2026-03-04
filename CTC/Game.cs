@@ -8,7 +8,7 @@ namespace CTC
 {
     /// <summary>
     /// Main game class. Phase 3: uses a Raylib-based window and game loop.
-    /// Rendering (Phase 5) and input (Phase 6) still use stub implementations.
+    /// Phase 6: mouse/keyboard input read directly from Raylib each frame.
     /// </summary>
     public class Game : IDisposable
     {
@@ -17,30 +17,27 @@ namespace CTC
 
         private GameDesktop? Desktop;
 
+        // Phase 6: previous frame mouse state, used to detect button transitions.
+        private MouseState _prevMouse = new MouseState(0, 0);
+
         // ------------------------------------------------------------------ //
         // Entry point                                                          //
         // ------------------------------------------------------------------ //
 
         /// <summary>
-        /// Opens the Raylib window and runs the game loop until the window is
-        /// closed. Validates the Phase 3 checkpoint: an empty black window
-        /// opens via Raylib and closes cleanly.
+        /// Opens the Raylib window and runs the game loop until the window is closed.
         /// </summary>
         public void Run()
         {
-            // Phase 3: Raylib window initialization.
             Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
             Raylib.InitWindow(DefaultWidth, DefaultHeight, "SharpTibiaClient");
-            Raylib.SetTargetFPS(60);   // Phase 3: 60 FPS cap (roadmap default); set to 0 for uncapped
+            Raylib.SetTargetFPS(60);
 
             Initialize();
             LoadContent();
 
             while (!Raylib.WindowShouldClose())
             {
-                // Build a GameTime from Raylib's high-resolution timer.
-                // ElapsedGameTime and TotalGameTime drive movie playback and
-                // sprite animation until Phase 6 replaces the remaining consumers.
                 GameTime time = new GameTime
                 {
                     ElapsedGameTime = TimeSpan.FromSeconds(Raylib.GetFrameTime()),
@@ -50,13 +47,14 @@ namespace CTC
                 // Keep UIContext window dimensions in sync with the live Raylib window.
                 UIContext.SyncWindowSize(Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
 
-                // Propagate resize events so GameDesktop.OnResize fires correctly.
                 if (Raylib.IsWindowResized())
                     UIContext.Window.RaiseClientSizeChanged();
 
+                // Phase 6: read Raylib input and dispatch to the UI hierarchy.
+                ProcessInput();
+
                 Update(time);
 
-                // Phase 3: Raylib draw block replaces GraphicsDevice.Clear + base.Draw().
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Color.Black);
                 Draw(time);
@@ -73,15 +71,11 @@ namespace CTC
 
         private void Initialize()
         {
-            // UIContext is initialised against the now-live Raylib window so that
-            // UIContext.SyncWindowSize picks up the correct initial dimensions.
-            // Phase 5: GraphicsDeviceManager removed; UIContext no longer holds it.
             UIContext.Initialize(new GameWindow());
         }
 
         private void LoadContent()
         {
-            // Phase 4: UIContext.Load() loads font + skin sheet via Raylib.
             UIContext.Load();
 
             Desktop = new GameDesktop();
@@ -90,8 +84,6 @@ namespace CTC
             Desktop.LayoutSubviews();
             Desktop.NeedsLayout = true;
 
-            // The TMV / Tibia.dat / Tibia.spr files are optional for this phase —
-            // the window opens cleanly even when they are absent.
             try
             {
                 LoadMovieState();
@@ -138,33 +130,64 @@ namespace CTC
             State.Update(new GameTime());
         }
 
-        private void UnloadContent()
+        private void UnloadContent() { }
+
+        // ------------------------------------------------------------------ //
+        // Phase 6 — Input                                                     //
+        // ------------------------------------------------------------------ //
+
+        /// <summary>
+        /// Phase 6: reads Raylib mouse/keyboard state and dispatches UI events.
+        /// Called once per frame before Update().
+        /// </summary>
+        private void ProcessInput()
         {
-            // Phase 5 will add Raylib texture/font unloading here.
+            MouseState curr = BuildMouseState();
+
+            // Always propagate mouse position so drag tracking works.
+            Desktop?.MouseMove(curr);
+
+            // Dispatch on left-button state transitions (both press and release).
+            if (curr.LeftButton != _prevMouse.LeftButton)
+                Desktop?.MouseLeftClick(curr);
+
+            // Scroll wheel: dispatch to the UI hierarchy.
+            float wheel = Raylib.GetMouseWheelMove();
+            if (wheel != 0f)
+                Desktop?.MouseScroll(curr, (int)wheel);
+
+            _prevMouse = curr;
         }
 
         /// <summary>
-        /// Per-frame update. Phase 6 will replace Desktop.Update(time) with
-        /// direct Raylib input reads (IsMouseButtonPressed, GetMousePosition).
+        /// Phase 6: builds a MouseState by querying Raylib for the current
+        /// mouse position and button states.
         /// </summary>
+        private static MouseState BuildMouseState()
+        {
+            return new MouseState(
+                Raylib.GetMouseX(),
+                Raylib.GetMouseY(),
+                Raylib.IsMouseButtonDown(MouseButton.Left) ? ButtonState.Pressed : ButtonState.Released,
+                Raylib.IsMouseButtonDown(MouseButton.Right) ? ButtonState.Pressed : ButtonState.Released,
+                Raylib.IsMouseButtonDown(MouseButton.Middle) ? ButtonState.Pressed : ButtonState.Released
+            );
+        }
+
+        // ------------------------------------------------------------------ //
+        // Update / Draw                                                        //
+        // ------------------------------------------------------------------ //
+
         private void Update(GameTime time)
         {
             Desktop?.Update(time);
         }
 
-        /// <summary>
-        /// Per-frame draw. Phase 5: all SpriteBatch calls replaced with Raylib direct calls;
-        /// draw is already wrapped inside BeginDrawing/EndDrawing by Run().
-        /// </summary>
         private void Draw(GameTime time)
         {
             Desktop?.Draw(UIContext.Window.ClientBounds);
         }
 
-        public void Dispose()
-        {
-            // Run() calls UnloadContent() and CloseWindow() when the loop exits;
-            // Dispose is a safety net for early termination.
-        }
+        public void Dispose() { }
     }
 }

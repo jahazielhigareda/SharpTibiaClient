@@ -126,6 +126,18 @@ namespace CTC
             return false;
         }
 
+        /// <summary>
+        /// Phase 6: dispatches scroll-wheel to the focused panel (if any) or
+        /// to whichever child the mouse is currently over.
+        /// </summary>
+        public override bool MouseScroll(MouseState mouse, int delta)
+        {
+            if (UIContext.MouseFocusedPanel != null)
+                return UIContext.MouseFocusedPanel.MouseScroll(mouse, delta);
+
+            return base.MouseScroll(mouse, delta);
+        }
+
         protected void OnOpenContainer(ClientViewport Viewport, ClientContainer Container)
         {
             ContainerPanel Panel = new ContainerPanel(Viewport, Container.ContainerID);
