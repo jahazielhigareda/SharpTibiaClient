@@ -17,4 +17,8 @@
     <EmbeddedResource Include="TibiaProtocolMap.xml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Raylib-cs" Version="6.0.0" />
+  </ItemGroup>
+
 </Project>
