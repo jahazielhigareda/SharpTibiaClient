@@ -8,7 +8,15 @@ namespace CTC
 {
     public class TibiaGameData
     {
-        public readonly int Version = 740;
+        // Phase 8: .dat signature constants.
+        public const UInt32 DatSignature74 = 0x41360000u; // Tibia 7.4 .dat signature
+        public const UInt32 DatSignature86 = 0x44380000u; // Tibia 8.6 .dat signature
+
+        // Protocol version values used in version comparisons throughout this class.
+        private const int ProtocolVersion74 = 740;
+        private const int ProtocolVersion86 = 860;
+
+        public readonly int Version;
         UInt32 DatVersion, SprVersion;
         UInt16 EffectCount, DistanceCount, CreatureCount, ItemCount;
         Dictionary<int, GameImage> Images = new Dictionary<int, GameImage>();
@@ -36,6 +44,18 @@ namespace CTC
 
             SprVersion = ReadU32(SpriteFile);
             DatVersion = ReadU32(DatFile);
+
+            // Phase 8: Determine protocol version from .dat signature.
+            if (DatVersion == DatSignature86)
+                Version = ProtocolVersion86;
+            else if (DatVersion == DatSignature74)
+                Version = ProtocolVersion74;
+            else
+            {
+                // Unknown signature — continue as 7.4 (best-effort).
+                Log.Warning($"[TibiaGameData] Unknown .dat signature 0x{DatVersion:X8}; assuming 7.4 format.");
+                Version = ProtocolVersion74;
+            }
 
 	        //get max id
             ItemCount = ReadU16(DatFile);
@@ -106,8 +126,10 @@ namespace CTC
 						        iType.IsWriteable = true;
                                 iType.MaxTextLength = ReadU16(DatFile);
 						        break;
-					        case 0x08: // writtable objects that can't be edited 
-						        iType.IsReadable = true;
+					        case 0x08:
+                                // 7.4: writtable objects that can't be edited (no extra data).
+                                // Phase 8 / 8.6: Cloth flag (same byte value, no extra data either).
+						        iType.IsReadable = Version < ProtocolVersion86;
 						        break;
 					        case 0x09: //can contain fluids
                                 iType.IsFluidContainer = true;
@@ -134,8 +156,13 @@ namespace CTC
 						        iType.CanPickup = true;
 						        break;
 					        case 0x10:
-						        iType.LightLevel = ReadU16(DatFile);
-						        iType.LightColor = ReadU16(DatFile);
+                                // 7.4: light source (reads LightLevel + LightColor as two U16).
+                                // Phase 8 / 8.6: HasLookType flag (no extra data to read).
+                                if (Version < ProtocolVersion86)
+                                {
+						            iType.LightLevel = ReadU16(DatFile);
+						            iType.LightColor = ReadU16(DatFile);
+                                }
 						        break;
 					        case 0x11: // can see what is under (ladder holes, stairs holes etc)
                                 sType.FloorTransparent = true;
@@ -181,6 +208,16 @@ namespace CTC
 						        //Log.Debug("Unknown attribute 0x1D - " + ID + " - " + ReadU16(file), this);
 						        break;
 					        case 0xFF:
+						        break;
+					        // Phase 8: Additional item property flags present in the 8.6 .dat format.
+					        case 0x20: // Rotateable
+                                iType.CanTurn = true;
+						        break;
+					        case 0x40: // HookSouth
+                                iType.IsWall = true;
+						        break;
+					        case 0x80: // HookEast
+                                iType.IsWall = true;
 						        break;
 					        default:
                                 throw new System.IO.IOException("Malformed metadata file.");

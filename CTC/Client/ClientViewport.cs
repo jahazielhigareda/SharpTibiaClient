@@ -6,6 +6,16 @@ using System.Text;
 namespace CTC
 {
     /// <summary>
+    /// Phase 8: A single entry in the in-game quest log, as reported by the server.
+    /// </summary>
+    public class ClientQuestEntry
+    {
+        public ushort Id;
+        public string Name      = "";
+        public bool   Completed;
+    }
+
+    /// <summary>
     /// Entire state of the client in memory, including map, creatures, skills etc.
     /// </summary>
     public class ClientViewport
@@ -61,6 +71,14 @@ namespace CTC
         /// The default chat channel
         /// </summary>
         public ClientChannel DefaultChannel;
+
+        // Phase 8: Premium account state (reported in the character list packet).
+        public bool   IsPremium    = false;
+        public ushort PremiumDays  = 0;
+
+        // Phase 8: Quest log populated by QuestLogList / QuestLogDetail packets (0xCA/0xCB).
+        public System.Collections.Generic.List<ClientQuestEntry> QuestLog
+            = new System.Collections.Generic.List<ClientQuestEntry>();
 
         #endregion
 

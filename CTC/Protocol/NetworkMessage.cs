@@ -16,6 +16,35 @@ namespace CTC
             this.Raw = raw;
         }
 
+        // Phase 8: Create a NetworkMessage from a pre-decrypted byte slice.
+        // Used by GameConnection after XTEA decryption so packets can be parsed
+        // by the existing TibiaGameProtocol machinery without a Socket.
+        public static NetworkMessage FromDecryptedBytes(byte[] src, int offset, int length)
+        {
+            var msg = new NetworkMessage(raw: true);
+            msg.Size  = length;
+            msg.Index = 0;
+            Buffer.BlockCopy(src, offset, msg.Data, 0, length);
+            return msg;
+        }
+
+        // Phase 8: Decrypt the message payload in-place with XTEA.
+        // The entire Data[0..Size] region is decrypted; Size must be a multiple of 8.
+        public void DecryptXtea(uint[] key)
+        {
+            Xtea.Decrypt(Data, 0, Size, key);
+        }
+
+        // Phase 8: Verify the Adler32 checksum that precedes the payload.
+        // Expects the first 4 bytes of Data to be the checksum covering Data[4..Size].
+        public bool VerifyAdler32()
+        {
+            if (Size < 4) return false;
+            uint expected = Adler32.Compute(Data, 4, Size - 4);
+            uint actual   = BitConverter.ToUInt32(Data, 0);
+            return actual == expected;
+        }
+
         public string Text {
             get { return ASCIIEncoding.ASCII.GetString(Data, 0, Size); }
         }
