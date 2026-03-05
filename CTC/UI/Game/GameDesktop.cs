@@ -87,6 +87,24 @@ namespace CTC
             Frame.AddClient(State);
         }
 
+        /// <summary>
+        /// Adds a <see cref="LoginPanel"/> as a floating overlay on the desktop.
+        /// </summary>
+        public void AddLoginPanel(LoginPanel panel)
+        {
+            panel.ZOrder = 100; // Float above game panels
+            AddSubview(panel);
+            NeedsLayout = true;
+        }
+
+        /// <summary>
+        /// Removes a previously added <see cref="LoginPanel"/> from the desktop.
+        /// </summary>
+        public void RemoveLoginPanel(LoginPanel panel)
+        {
+            panel.RemoveFromSuperview();
+        }
+
         #region Event Handlers
 
         /// <summary>

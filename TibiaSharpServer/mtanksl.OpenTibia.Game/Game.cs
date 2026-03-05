@@ -188,6 +188,30 @@ public sealed class GameEngine : IDisposable
         return DispatchOnRegistryAsync(ctx => _registry.DispatchNpcSayAsync(ctx, player, words, npc));
     }
 
+    /// <summary>
+    /// Applies a one-tile movement delta to <paramref name="player"/>.
+    /// Full boundary and collision checking can be added here as the game world
+    /// model matures; for now the update is applied unconditionally while the map
+    /// layer is still a stub.
+    /// </summary>
+    /// <param name="player">The player to move.</param>
+    /// <param name="dx">X delta (-1, 0 or +1).</param>
+    /// <param name="dy">Y delta (-1, 0 or +1).</param>
+    public Task MovePlayerAsync(Player player, int dx, int dy)
+    {
+        // TODO: Add collision detection and movement script dispatch once the
+        //       tile/map layer is implemented.  Movement script (IMovementScript)
+        //       calls belong here rather than in the network handler.
+        var newPos = new Position(
+            (ushort)(player.Position.X + dx),
+            (ushort)(player.Position.Y + dy),
+            player.Position.Z);
+
+        player.Position = newPos;
+        Logger.Debug($"[Game] {player.Name} moved to {newPos}.");
+        return Task.CompletedTask;
+    }
+
     private Task DispatchOnRegistryAsync(Func<IContext, Task> dispatch)
     {
         var ctx = CreateContext();

@@ -32,6 +32,13 @@ public sealed class ServerConfig
     public int GamePort { get; init; } = 7172;
 
     /// <summary>
+    /// The IP address (or hostname) that the login server tells clients to connect to
+    /// for the game server.  Defaults to localhost for development.
+    /// </summary>
+    [JsonPropertyName("gameServerIp")]
+    public string GameServerIp { get; init; } = "127.0.0.1";
+
+    /// <summary>
     /// Status port — defaults to the same value as LoginPort (7171) because
     /// the Tibia protocol multiplexes login and status on a single port.
     /// </summary>

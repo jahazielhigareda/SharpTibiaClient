@@ -78,10 +78,13 @@ namespace CTC
 
         /// <summary>
         /// Phase 9: Releases GPU textures by disposing the owned TibiaGameData.
+        /// Also disposes the underlying PacketStream if it implements IDisposable
+        /// (e.g. <see cref="LivePacketStream"/> which owns a TCP connection).
         /// </summary>
         public void Dispose()
         {
             GameData?.Dispose();
+            (InStream as IDisposable)?.Dispose();
         }
     }
 }

@@ -84,14 +84,60 @@ namespace CTC
             Desktop.LayoutSubviews();
             Desktop.NeedsLayout = true;
 
+            // Show the login panel so the player can connect to a live server.
+            // If a local Test.tmv replay file exists it is also loaded as a fallback
+            // debug view (added to the desktop alongside the login screen).
+            ShowLoginPanel();
+
             try
             {
                 LoadMovieState();
             }
-            catch (Exception ex)
+            catch
             {
-                Log.Warning($"Movie state not loaded (files may be missing): {ex.Message}");
+                // Movie file absent or corrupt — normal in a live-server deployment.
+                // The login panel is already visible; silently swallow this.
             }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="LoginPanel"/> centred in the game window and wires up
+        /// the <see cref="LoginPanel.CharacterSelected"/> event to connect to the
+        /// game server via <see cref="LivePacketStream"/>.
+        /// </summary>
+        private void ShowLoginPanel()
+        {
+            var panel = new LoginPanel();
+            panel.LayoutSubviews();
+            Desktop?.AddLoginPanel(panel);
+
+            panel.CharacterSelected += async (entry, xteaKey) =>
+            {
+                try
+                {
+                    Log.Debug($"[Game] Connecting to game server {entry.Ip}:{entry.Port} as '{entry.Name}'…");
+                    LivePacketStream lps = await LivePacketStream.ConnectAsync(entry, entry.Name, xteaKey)
+                                                                 .ConfigureAwait(false);
+                    ClientState state = new ClientState(lps);
+
+                    // The server sends PlayerLogin immediately; hook Login event
+                    // to add the client to the desktop once we know the player is live.
+                    state.Viewport.Login += vp =>
+                    {
+                        // Marshalled to the game thread — safe to call Desktop.AddClient here.
+                        Desktop?.AddClient(state);
+                        Desktop?.RemoveLoginPanel(panel);
+                    };
+
+                    // Kick off the first Update so the PlayerLogin packet is processed
+                    // on the very next frame without waiting a full second.
+                    state.Update(new GameTime());
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"[Game] Failed to connect to game server: {ex.Message}");
+                }
+            };
         }
 
         /// <summary>

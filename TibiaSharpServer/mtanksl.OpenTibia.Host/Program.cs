@@ -27,6 +27,7 @@ ServerConfig config = ServerConfig.Load(
 Logger.Info($"Server name : {config.ServerName}");
 Logger.Info($"Login port  : {config.LoginPort}");
 Logger.Info($"Game port   : {config.GamePort}");
+Logger.Info($"Game IP     : {config.GameServerIp}");
 Logger.Info($"Max players : {config.MaxPlayers}");
 Logger.Info($"XP stage 1  : x{config.Experience.Stage1Multiplier} up to level {config.Experience.Stage1MaxLevel}");
 
@@ -103,20 +104,31 @@ Console.CancelKeyPress += (_, e) =>
     cts.Cancel();
 };
 
-// Login server (stub handler — full protocol implementation is a separate concern)
+// Login server — full Tibia 8.6 handshake
 var loginServer = new TcpServer(config.LoginPort, async client =>
 {
     Logger.Debug($"Login connection from {client.Client.RemoteEndPoint}");
     await using var conn = new Connection(client);
-    // TODO: implement full 8.6 login handshake + status packet dispatch
+    await LoginHandler.HandleAsync(
+        conn,
+        unitOfWork.Accounts,
+        unitOfWork.Players,
+        config.ServerName,
+        config.GameServerIp,
+        (ushort)config.GamePort,
+        cts.Token);
 });
 
-// Game server (stub handler)
+// Game server — full Tibia 8.6 game protocol loop
 var gameServer = new TcpServer(config.GamePort, async client =>
 {
     Logger.Debug($"Game connection from {client.Client.RemoteEndPoint}");
     await using var conn = new Connection(client);
-    // TODO: implement full 8.6 game protocol loop
+    await GameHandler.HandleAsync(
+        conn,
+        unitOfWork.Players,
+        engine,
+        cts.Token);
 });
 
 Logger.Info($"Login / status server listening on port {config.LoginPort}");
