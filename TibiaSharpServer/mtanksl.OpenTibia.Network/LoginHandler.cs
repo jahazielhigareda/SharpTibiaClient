@@ -11,8 +11,9 @@ namespace mtanksl.OpenTibia.Network;
 ///
 /// Protocol flow (server → client, then client → server):
 ///   1. Server sends a 4-byte random challenge.
-///   2. Client sends: [2B len] [1B type=0x01] [2B OS] [2B version=860]
-///                    [4B Adler32 of RSA block] [128B RSA-encrypted block]
+///   2. Client sends: [2B len] [4B Adler32] [1B type=0x01] [2B OS] [2B version=860]
+///                    [128B RSA-encrypted block]
+///      Adler32 covers bytes 4.. (type + OS + version + RSA block).
 ///      RSA plaintext: [0x00] [16B XTEA key] [2B acc_len] [account] [2B pass_len] [password]
 ///   3. Server validates account + password against the data layer.
 ///   4a. On success: sends character-list response (type 0x64).
@@ -57,7 +58,13 @@ public static class LoginHandler
             }
 
             // Parse packet header (before the RSA block).
+            // Tibia 8.60 login packets carry a 4-byte outer Adler32 checksum at the start
+            // of the body (covering bytes 4.. — i.e. type + OS + version + RSA block).
             int pos = 0;
+            uint adler = (uint)(body[pos] | (body[pos + 1] << 8) |
+                                (body[pos + 2] << 16) | (body[pos + 3] << 24));
+            pos += 4;
+
             byte packetType = body[pos++];
             if (packetType != 0x01)
             {
@@ -75,11 +82,6 @@ public static class LoginHandler
                 return;
             }
 
-            // Adler32 checksum of the RSA block (we verify it for integrity).
-            uint adler = (uint)(body[pos] | (body[pos + 1] << 8) |
-                                (body[pos + 2] << 16) | (body[pos + 3] << 24));
-            pos += 4;
-
             if (body.Length - pos < 128)
             {
                 Logger.Warning("[Login] Login packet too short for RSA block.");
@@ -89,8 +91,9 @@ public static class LoginHandler
             byte[] rsaCipher = new byte[128];
             Buffer.BlockCopy(body, pos, rsaCipher, 0, 128);
 
-            // ── Step 3: Verify Adler32 then RSA-decrypt ───────────────────────
-            uint expectedAdler = Adler32.Compute(rsaCipher, 0, 128);
+            // ── Step 3: Verify outer Adler32 then RSA-decrypt ─────────────────
+            // The checksum covers everything after itself: type + OS + version + RSA block.
+            uint expectedAdler = Adler32.Compute(body, 4, body.Length - 4);
             if (adler != expectedAdler)
             {
                 Logger.Warning($"[Login] Adler32 mismatch: got 0x{adler:X8}, expected 0x{expectedAdler:X8}.");

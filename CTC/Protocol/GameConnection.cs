@@ -343,15 +343,26 @@ namespace CTC
 
             byte[] encRsa = Rsa.Encrypt(rsaBlock);
 
-            // Payload: type(1) + OS(2) + version(2) + rsaBlock(128) = 133 bytes.
-            var payload = new byte[133];
+            // Payload: outer_adler32(4) + type(1) + OS(2) + version(2) + rsaBlock(128) = 137 bytes.
+            var payload = new byte[137];
             int p = 0;
+
+            // Reserve 4 bytes for the outer Adler32 checksum (written after the rest is built).
+            p += 4;
+
             payload[p++] = OutgoingPacketType.GameLogin; // 0x0A — shared type byte for both directions
             payload[p++] = (byte)(Os & 0xFF);
             payload[p++] = (byte)(Os >> 8);
             payload[p++] = (byte)(ClientVer & 0xFF);
             payload[p++] = (byte)(ClientVer >> 8);
             Buffer.BlockCopy(encRsa, 0, payload, p, 128);
+
+            // Outer Adler32 covers type + OS + version + RSA block (payload[4..136]).
+            uint cksum = Adler32.Compute(payload, 4, 133);
+            payload[0] = (byte)(cksum & 0xFF);
+            payload[1] = (byte)((cksum >>  8) & 0xFF);
+            payload[2] = (byte)((cksum >> 16) & 0xFF);
+            payload[3] = (byte)((cksum >> 24) & 0xFF);
 
             // Prepend 2-byte little-endian packet length and send.
             var packet = new byte[2 + payload.Length];

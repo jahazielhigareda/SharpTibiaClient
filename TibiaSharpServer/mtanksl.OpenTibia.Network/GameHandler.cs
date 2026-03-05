@@ -12,7 +12,8 @@ namespace mtanksl.OpenTibia.Network;
 ///
 /// Protocol flow:
 ///   1. Client sends game-login packet (unencrypted):
-///        [2B len] [1B type=0x0A] [2B OS] [2B version=860] [128B RSA-encrypted block]
+///        [2B len] [4B Adler32] [1B type=0x0A] [2B OS] [2B version=860] [128B RSA-encrypted block]
+///      Adler32 covers bytes 4.. (type + OS + version + RSA block).
 ///      RSA plaintext: [0x00] [16B XTEA key] [2B name_len] [char_name]
 ///   2. Server decrypts, loads the player, and sends the initial state packet
 ///      (unencrypted for the very first message; all subsequent are XTEA-encrypted).
@@ -39,13 +40,17 @@ public static class GameHandler
         {
             // ── Step 1: Read game-login packet (unencrypted) ──────────────────
             byte[]? body = await conn.ReadPacketAsync(ct);
-            if (body == null || body.Length < 5)
+            if (body == null || body.Length < 9)
             {
                 Logger.Warning("[Game] Client disconnected before sending game-login.");
                 return;
             }
 
+            // Tibia 8.60 game-login packets carry a 4-byte outer Adler32 at the start
+            // of the body, covering everything after it (type + OS + version + RSA block).
             int pos = 0;
+            pos += 4; // skip outer Adler32 (not verified here; RSA integrity suffices)
+
             byte packetType = body[pos++];
             if (packetType != 0x0A)
             {
