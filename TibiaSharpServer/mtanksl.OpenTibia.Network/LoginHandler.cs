@@ -12,9 +12,8 @@ namespace mtanksl.OpenTibia.Network;
 /// Protocol flow (server → client, then client → server):
 ///   1. Server sends a 4-byte random challenge.
 ///   2. Client sends: [2B len] [4B outer_adler32] [1B type=0x01] [2B OS] [2B version=860]
-///                    [4B inner_adler32] [128B RSA-encrypted block]
-///      outer_adler32 covers bytes [4..140] (type + OS + version + inner_adler32 + RSA).
-///      inner_adler32 covers the 128-byte RSA-encrypted block only.
+///                    [128B RSA-encrypted block]
+///      outer_adler32 covers bytes [4..136] (type + OS + version + RSA block).
 ///      RSA plaintext: [0x00] [16B XTEA key] [2B acc_len] [account] [2B pass_len] [password]
 ///   3. Server validates account + password against the data layer.
 ///   4a. On success: sends character-list response (type 0x64).
@@ -52,19 +51,18 @@ public static class LoginHandler
 
             // ── Step 2: Read login packet ─────────────────────────────────────
             byte[]? body = await conn.ReadPacketAsync(ct);
-            if (body == null || body.Length < 13)
+            if (body == null || body.Length < 9)
             {
                 Logger.Warning("[Login] Client disconnected before sending login packet.");
                 return;
             }
 
             // Tibia 8.60 login packet body layout (after the 2-byte length prefix):
-            //   [0..3]   outer Adler32 covering bytes [4..140]
+            //   [0..3]   outer Adler32 covering bytes [4..136] (type + OS + version + RSA)
             //   [4]      packet type (0x01)
             //   [5..6]   OS
             //   [7..8]   client version
-            //   [9..12]  inner Adler32 covering the 128-byte RSA block only
-            //   [13..140] RSA-encrypted block (128 bytes)
+            //   [9..136] RSA-encrypted block (128 bytes)
             int pos = 0;
             uint outerAdler = (uint)(body[pos] | (body[pos + 1] << 8) |
                                      (body[pos + 2] << 16) | (body[pos + 3] << 24));
@@ -87,11 +85,6 @@ public static class LoginHandler
                 return;
             }
 
-            // Inner Adler32 — covers the 128-byte RSA block that follows.
-            uint innerAdler = (uint)(body[pos] | (body[pos + 1] << 8) |
-                                     (body[pos + 2] << 16) | (body[pos + 3] << 24));
-            pos += 4;
-
             if (body.Length - pos < 128)
             {
                 Logger.Warning("[Login] Login packet too short for RSA block.");
@@ -101,21 +94,12 @@ public static class LoginHandler
             byte[] rsaCipher = new byte[128];
             Buffer.BlockCopy(body, pos, rsaCipher, 0, 128);
 
-            // ── Step 3: Verify checksums then RSA-decrypt ─────────────────────
-            // Outer Adler32 covers body[4..] (type + OS + version + inner_adler32 + RSA).
+            // ── Step 3: Verify outer Adler32 then RSA-decrypt ─────────────────
+            // The outer Adler32 covers body[4..136]: type + OS + version + RSA block.
             uint expectedOuter = Adler32.Compute(body, 4, body.Length - 4);
             if (outerAdler != expectedOuter)
             {
-                Logger.Warning($"[Login] Outer Adler32 mismatch: got 0x{outerAdler:X8}, expected 0x{expectedOuter:X8}.");
-                await SendErrorAsync(conn, "Packet integrity check failed.", ct);
-                return;
-            }
-
-            // Inner Adler32 covers the 128-byte RSA-encrypted block only.
-            uint expectedInner = Adler32.Compute(rsaCipher, 0, 128);
-            if (innerAdler != expectedInner)
-            {
-                Logger.Warning($"[Login] Inner Adler32 mismatch: got 0x{innerAdler:X8}, expected 0x{expectedInner:X8}.");
+                Logger.Warning($"[Login] Adler32 mismatch: got 0x{outerAdler:X8}, expected 0x{expectedOuter:X8}.");
                 await SendErrorAsync(conn, "Packet integrity check failed.", ct);
                 return;
             }
