@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Hero" nameDescription="a hero" race="blood" speed="280" experience="1200" manacost="0">
+  <health now="1400" max="1400" />
+  <look typeex="0" type="73" head="0" body="0" legs="0" feet="0" corpse="6080" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="10" />
+    <element earthpercent="50" />
+    <element firePercent="30" />
+    <element energyPercent="40" />
+    <element icePercent="10" />
+    <element deathPercent="-20" />
+    <element holyPercent="50" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Let's have a fight!" />
+    <voice yell="0" sentence="Welcome to my battleground!" />
+    <voice yell="0" sentence="Have you seen princess Lumelia?" />
+    <voice yell="0" sentence="I will sing a tune at your grave." />
+  </voices>
+  <defenses mitigation="1.32" defense="0" armor="35" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="240" />
+    <attack name="arrows" interval="3000" chance="70" min="0" max="120" />
+    <attack name="self healing" interval="2000" chance="50" min="200" max="250" />
+  </attacks>
+  <loot />
+</monster>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="The Abomination" nameDescription="The Abomination" race="venom" speed="340" experience="8500" manacost="0">
+  <health now="285000" max="285000" />
+  <look typeex="0" type="238" head="0" body="0" legs="0" feet="0" corpse="6532" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="50" />
+    <element earthpercent="50" />
+    <element firePercent="50" />
+    <element energyPercent="50" />
+    <element icePercent="50" />
+    <element deathPercent="50" />
+    <element holyPercent="50" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="100" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="1" sentence="DEATH IS INEVITABLE!" />
+    <voice yell="1" sentence="I AM THE ESSENCE OF DEATH!" />
+  </voices>
+  <defenses mitigation="0" defense="0" armor="0" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks />
+  <loot />
+</monster>

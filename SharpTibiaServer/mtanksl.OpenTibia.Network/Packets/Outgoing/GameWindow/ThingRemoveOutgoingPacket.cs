@@ -1,0 +1,33 @@
+﻿using OpenTibia.Common.Objects;
+using OpenTibia.Common.Structures;
+using OpenTibia.IO;
+
+namespace OpenTibia.Network.Packets.Outgoing
+{
+    public class ThingRemoveOutgoingPacket : IOutgoingPacket
+    {
+        public ThingRemoveOutgoingPacket(Position position, byte index)
+        {
+            this.Position = position;
+
+            this.Index = index;
+        }
+
+        public Position Position { get; set; }
+
+        public byte Index { get; set; }
+        
+        public void Write(IByteArrayStreamWriter writer, IHasFeatureFlag features)
+        {
+            writer.Write( (byte)0x6C );
+
+            writer.Write(Position.X);
+
+            writer.Write(Position.Y);
+
+            writer.Write(Position.Z);
+
+            writer.Write(Index);
+        }
+    }
+}

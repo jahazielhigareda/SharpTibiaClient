@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Ice Golem" nameDescription="an ice golem" race="undead" speed="190" experience="295" manacost="0">
+  <health now="385" max="385" />
+  <look typeex="0" type="261" head="0" body="0" legs="0" feet="0" corpse="7282" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="0" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="20" />
+    <element earthpercent="0" />
+    <element firePercent="100" />
+    <element energyPercent="-20" />
+    <element icePercent="100" />
+    <element deathPercent="100" />
+    <element holyPercent="100" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Chrrr." />
+    <voice yell="0" sentence="Gnarr." />
+    <voice yell="0" sentence="Crrrrk." />
+  </voices>
+  <defenses mitigation="0.7" defense="0" armor="47" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="220" />
+    <attack name="ice strike" interval="3000" chance="70" min="50" max="85" />
+    <attack name="paralyse" interval="3000" chance="70" />
+
+  </attacks>
+  <loot />
+</monster>

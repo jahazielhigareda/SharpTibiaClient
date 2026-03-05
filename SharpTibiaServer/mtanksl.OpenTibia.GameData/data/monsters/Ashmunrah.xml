@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Ashmunrah" nameDescription="Ashmunrah" race="undead" speed="430" experience="3100" manacost="0">
+  <health now="5000" max="5000" />
+  <look typeex="0" type="87" head="0" body="0" legs="0" feet="0" corpse="6031" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="10" />
+    <element earthpercent="25" />
+    <element firePercent="-5" />
+    <element energyPercent="20" />
+    <element icePercent="20" />
+    <element deathPercent="100" />
+    <element holyPercent="-10" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="100" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="You will be history soon." />
+    <voice yell="0" sentence="Ahhhh all those long years." />
+    <voice yell="0" sentence="My traitorous son has thee." />
+    <voice yell="0" sentence="Come to me, my allys and underlings." />
+    <voice yell="0" sentence="Ages come, ages go. Ashmunrah remains." />
+    <voice yell="0" sentence="I might be trapped but not without power." />
+    <voice yell="0" sentence="No mortal or undead will steal my secrets!" />
+  </voices>
+  <defenses mitigation="0" defense="0" armor="0" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks />
+  <loot />
+</monster>

@@ -1,0 +1,34 @@
+﻿using OpenTibia.Common.Structures;
+using OpenTibia.Game.Commands;
+using OpenTibia.Game.Common;
+using OpenTibia.Network.Packets.Outgoing;
+using System;
+using System.Collections.Generic;
+
+namespace OpenTibia.Game.CommandHandlers
+{
+    public class RaidHandler: CommandHandler<PlayerSayCommand>
+    {
+        public override Promise Handle(Func<Promise> next, PlayerSayCommand command)
+        {
+            if (command.Message.StartsWith("/raid ") )
+            {
+                List<string> parameters = command.Parameters(6);
+
+                if (parameters.Count == 1)
+                {
+                    string name = parameters[0];
+
+                    if (Context.Server.Raids.Start(name) )
+                    {
+                        Context.AddPacket(command.Player, new ShowWindowTextOutgoingPacket(MessageMode.Look, "Raid " + name + " has been started.") );
+                    }
+                }
+
+                return Context.AddCommand(new ShowMagicEffectCommand(command.Player, MagicEffectType.Puff) );
+            }
+
+            return next();
+        }
+    }
+}

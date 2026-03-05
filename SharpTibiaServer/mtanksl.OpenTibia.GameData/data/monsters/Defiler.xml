@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Defiler" nameDescription="a defiler" race="venom" speed="160" experience="3700" manacost="0">
+  <health now="3650" max="3650" />
+  <look typeex="0" type="238" head="0" body="0" legs="0" feet="0" corpse="6532" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="1" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="85" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="100" />
+    <element firePercent="-25" />
+    <element energyPercent="10" />
+    <element icePercent="20" />
+    <element deathPercent="0" />
+    <element holyPercent="0" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Blubb" />
+    <voice yell="0" sentence="Blubb Blubb" />
+  </voices>
+  <defenses mitigation="1.32" defense="0" armor="60" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="240" />
+    <attack name="terra strike" interval="3000" chance="70" min="160" max="270" />
+
+    <attack name="self healing" interval="2000" chance="50" min="280" max="350" />
+
+
+
+  </attacks>
+  <loot />
+</monster>

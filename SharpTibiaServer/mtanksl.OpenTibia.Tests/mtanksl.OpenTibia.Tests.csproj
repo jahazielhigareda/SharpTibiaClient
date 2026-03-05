@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.4.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.4.3" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mtanksl.OpenTibia.Common\mtanksl.OpenTibia.Common.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Game\mtanksl.OpenTibia.Game.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.IO\mtanksl.OpenTibia.IO.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Security\mtanksl.OpenTibia.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="data\server\config.lua">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

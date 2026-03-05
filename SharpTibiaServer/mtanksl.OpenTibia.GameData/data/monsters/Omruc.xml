@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Omruc" nameDescription="Omruc" race="undead" speed="370" experience="2950" manacost="0">
+  <health now="4300" max="4300" />
+  <look typeex="0" type="90" head="0" body="0" legs="0" feet="0" corpse="6025" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="4" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="20" />
+    <element firePercent="20" />
+    <element energyPercent="-5" />
+    <element icePercent="-5" />
+    <element deathPercent="100" />
+    <element holyPercent="-10" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Die!" />
+    <voice yell="0" sentence="Psssst, I am over chhhere." />
+    <voice yell="0" sentence="Catchhhh me if chhhou can." />
+    <voice yell="0" sentence="Chhhhou are marked ashhh my prey." />
+    <voice yell="0" sentence="Now chhhou shhhee me ... Now chhhou don't." />
+  </voices>
+  <defenses mitigation="0" defense="0" armor="60" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks />
+  <loot />
+</monster>

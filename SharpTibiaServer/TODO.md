@@ -1,0 +1,215 @@
+# To do... one day...
+
+- Fight	
+	- War icons
+	- Splash
+	- Summon
+	- Convince
+- Bed
+- Party spells (Enchant Party, Heal Party, Protect Party, Train Party)
+- Party shared experience
+- X-Logging
+- Add missing 8.60 monsters: Acolyte of Darkness, Amarie, Armenius, Arthei, Azerus, Bane of Light, Boreth, Bride of Night, Cublarc the Plunderer, Doomsday Cultist, Dreadmaw, Duskbringer, Eclipse Knight, Enraged Brrokworm, Flamecaller Zazrak, Fleabringer, Ghostly Apparition, Gloombringer, Grodrik, Harbinder of Darkness, Hatebreeder, Lersatio, Marzie, Mutated Zalamon, Nightslayer, Pythius the Rotten, Samael, Servant Golem, Shadow of Lersatio, Shadow of Marziel, Sjadow of Boreth, The Keeper, Weak spawn of Despair, Wrath of Emperor, Yalahari
+- Add missing 8.60 monster corpses: Lizard Abomination, Snake God Essence
+- Configure more monster loots and attacks
+
+# To do... but I won't
+
+- Stamina (7.80)
+- Market (9.40)
+- Purse (9.54)
+- Offline training (9.60)
+- Browse Field (9.84)
+- Store (10.80)
+- The following feature flags are not fully implemented. They work, but as a placeholder: ConsoleMessageOtherCreatures, PlayerRegenerationTime, ChannelPlayerList, EnvironmentEffect, IsAnimated, PlayerBasicData, OfflineTrainingTime, ContainerPagination, ThingMarks, CreatureIcons, ExperienceGainRate, PVPFrame, ExpertMode, ShowExperienceGainRateCalculation, AdditionalSkills
+- Add 8.70, 9.86 and 10.98 monsters
+- Add 8.70, 9.86 and 10.98 items
+
+# Done (or good enough)
+
+- Tibia and Open Tibia's file format interpreters (.dat, .otb, .otbm, .pic, .spr)
+- TCP socket management for login and game servers
+- Packets and communication protocol (with RSA, Xtea, Adler32)
+- Task scheduler thread
+- Main game dispatcher thread
+- The base objects
+	- Vocation (knight, paladin, sorcerer, druid, etc) and rank (player, tutor, gamemaster) 
+- The base structures
+- Interacting with the client
+	- Premium days
+	- Message of the day
+	- Waiting list
+	- Quests
+		- Database for storage
+	- Achievements
+		- Database for storing achievements
+	- Hotkeys
+	- Report bug
+	- Report rule violation
+	- Debug assert
+	- Health, mana, soul, capacity, etc
+- Controlling the character
+	- Login
+	- Walking
+	- Turning
+	- Changing outfit
+		- Database for storing outfits/addons
+	- Logout
+- Interacting with other players
+	- Say
+		- Gamemaster in-game commands (kick, ban, ghost, etc)
+		- Player in-game commands
+		- Spells
+			- Database for storing spells
+			- Spell cooldown animation packets
+	- Whisper
+	- Yell
+	- Direct chat
+	- Channels
+	- Private channel
+	- Rule violation channel
+	- VIP
+		- Database for storing VIPs
+	- Safe Trade
+	- Party
+	- Guild
+	- Fight (vs Player)
+		- PVP vs non-PVP configuration
+		- Skull 
+		- Unjustified kills
+			- Database for storing unjustified kills and deaths
+- Interacting with npc
+	- Private NPC system
+	- NPC channel
+	- Dialogue
+	- Buy and sell items
+	- Trade window
+	- Travel
+	- Bank Account
+- Interacting with monsters
+	- Combat controls
+	- Fight (vs Monster)
+		- Monster spawn/respawn	
+		- Monster despawn (anti-luring)
+		- Loot
+		- Experience, level and level percent (advance and downgrade)
+		- Magic level and skills (advance and downgrade)
+		- Rooking
+		- Drop bag
+		- Drop items
+		- AOL
+		- Bless
+			- Database for storing blesses
+		- Walk, change target, select target and attack strategies 
+		- Immunity, mitigation, defense and armor
+		- Damage type and weapon attack modifier
+		- Sense invisible
+		- Paralysable
+		- Become invisible
+	- Rings and amulets charges
+	- Item duration
+		- Database for storing item attributes (serialization/deserialization)
+	- Weapon attributes (range, atk, def, arm)
+	- Ammunition
+	- Bow and arrow
+	- Wand and rod
+	- Two-handed items
+- Interacting with the game world 
+	- Look item
+		- Sign items
+		- House doors
+	- Move item
+		- Stackable items
+		- Hangable items
+		- Item attributes (speed, stealth, skill modifier, etc)
+	- Rotate item
+	- Use item
+		- Containers
+		- Depot lockers and towns
+		- Read and write items
+		- Quest chest item
+		- Gate of expertise
+		- Ladder/sewer
+		- etc
+	- Use item with creature
+		- Runes
+		- etc
+	- Use item with item
+		- Tools
+		- etc
+	- Mail
+		- Send parcel
+		- Send letter
+	- House
+		- Access list
+		- Database for storing houses, ownership, items
+	- Health and mana regeneration
+	- Soul regeneration
+	- Drunk and other special conditions
+	- No-logout zone
+	- Logout block
+	- Protection zone block
+	- Protection zone
+	- Swimming
+- Systems
+	- Server status info protocol
+		- Player's peek record
+		- Server rates
+		- Experience stages
+	- Account manager (create account, change password, add character, change character name, change character gender, move character to temple) 
+	- Server save routine
+	- Map clean routine
+	- Experimental support for other protocols, ranging from 7.40 to 10.98
+- Plugins
+	- C# dll plugins
+	- Lua scripting (actions, ammunitions, creaturescripts, globalevents, movements, npcs, raids, runes, spells, talkactions, weapons, monsterattacks)
+	- Lua debugging with ZeroBrane
+	- Lua autocomplete intellisense
+- Security and Connection
+	- Ban/unban by player name, account or ip address
+	- Rate limiting
+		- Kick multi-client
+		- Connections abuse
+		- Packets abuse
+		- Login attempts abuse
+		- Kick slow sockets
+		- Invalid message abuse
+		- Unknown packet abuse	
+	- Stop accepting new connections once limit is reached
+	- Kick after 1 minute without pong response
+	- Kick after 15 minutes idle
+	- Maintenance info
+	- Anti-spam: channel mute
+	- Allow clones configuration
+	- One player online per account configuration
+	- Replace kick on login configuration
+- Database support
+	- SQLite
+	- MySQL
+	- Microsoft SQL Server 
+	- Postgre SQL
+	- Oracle
+	- In Memory
+- Server statistics
+	- Active connections
+	- #Received messages and bytes
+	- #Sent messages and bytes
+	- Average processing time
+- Player admin management panel
+	- Broadcast Message
+	- Send Message
+	- Kick Player
+	- Ban Player
+- Build tools
+	- Automate build scripts (rebuild the solution, run tests, publish and zip)
+	- Automate sql generation
+
+# Support Us
+
+If you enjoy using open source projects and would like to support our work, consider making a donation! Your contributions help us maintain and improve the project. You can support us by sending directly to the following address:
+
+__Bitcoin (BTC) Address:__ bc1qc2p79gtjhnpff78su86u8vkynukt8pmfnr43lf
+
+__Monero (XMR) Address:__ 87KefRhqaf72bYBUF3EsUjY89iVRH72GsRsEYZmKou9ZPFhGaGzc1E4URbCV9oxtdTYNcGXkhi9XsRhd2ywtt1bq7PoBfd4
+
+Thank you for your support! Every contribution, no matter the size, makes a difference.

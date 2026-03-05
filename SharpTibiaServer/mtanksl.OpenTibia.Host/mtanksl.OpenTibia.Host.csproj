@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ApplicationIcon>tibia772.ico</ApplicationIcon>
+    <Title>MTOTS</Title>
+    <Version>1.9.3</Version>
+    <Authors>mtank</Authors>
+    <Company>mtanksl</Company>
+    <Product>MTOTS</Product>
+    <Description>An implementation in C# of open tibia server.</Description>
+    <RepositoryUrl>https://github.com/mtanksl/OpenTibia</RepositoryUrl>
+    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mtanksl.OpenTibia.Game\mtanksl.OpenTibia.Game.csproj" />
+  </ItemGroup>
+
+</Project>

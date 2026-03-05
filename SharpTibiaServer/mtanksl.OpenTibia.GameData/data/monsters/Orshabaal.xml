@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Orshabaal" nameDescription="Orshabaal" race="fire" speed="540" experience="10000" manacost="0">
+  <health now="22500" max="22500" />
+  <look typeex="0" type="201" head="0" body="0" legs="0" feet="0" corpse="2916" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="2500" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="20" />
+    <element earthpercent="100" />
+    <element firePercent="100" />
+    <element energyPercent="80" />
+    <element icePercent="0" />
+    <element deathPercent="50" />
+    <element holyPercent="0" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="100" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="1" sentence="YOU ARE DOOMED!" />
+    <voice yell="1" sentence="ORSHABAAL IS BACK!" />
+    <voice yell="1" sentence="SOULS FOR ORSHABAAL!" />
+    <voice yell="1" sentence="PRAISED BE MY MASTERS, THE RUTHLESS SEVEN!" />
+    <voice yell="0" sentence="Be prepared for the day my masters will come for you!" />
+  </voices>
+  <defenses mitigation="0" defense="0" armor="90" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="1991" />
+    <attack name="mana drain" interval="3000" chance="70" min="300" max="600" />
+
+
+    <attack name="great fireball" interval="3000" chance="70" min="310" max="600" />
+    <attack name="fire field" interval="3000" chance="70" min="20" max="20" />
+    <attack name="energy beam" interval="3000" chance="70" min="500" max="850" />
+    <attack name="self healing" interval="2000" chance="50" min="1500" max="2500" />
+    <attack name="haste" interval="2000" chance="50" />
+  </attacks>
+  <loot />
+</monster>

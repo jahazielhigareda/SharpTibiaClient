@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Ghazbaran" nameDescription="Ghazbaran" race="fire" speed="400" experience="15000" manacost="0">
+  <health now="77000" max="77000" />
+  <look typeex="0" type="12" head="0" body="66" legs="98" feet="75" corpse="6068" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="3500" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="30" />
+    <element earthpercent="100" />
+    <element firePercent="100" />
+    <element energyPercent="0" />
+    <element icePercent="100" />
+    <element deathPercent="1" />
+    <element holyPercent="-5" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="30">
+    <voice yell="1" sentence="FLAWLESS VICTORY!" />
+    <voice yell="1" sentence="COME AND GIVE ME SOME AMUSEMENT" />
+    <voice yell="1" sentence="IS THAT THE BEST YOU HAVE TO OFFER?" />
+    <voice yell="1" sentence="I AM GHAZBARAN OF THE TRIANGLE... AND I AM HERE TO CHALLENGE YOU ALL." />
+  </voices>
+  <defenses mitigation="0" defense="0" armor="0" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks />
+  <loot />
+</monster>

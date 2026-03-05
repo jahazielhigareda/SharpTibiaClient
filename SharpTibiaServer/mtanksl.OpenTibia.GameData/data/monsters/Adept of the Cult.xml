@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Adept of the Cult" nameDescription="an adept of the cult" race="blood" speed="190" experience="400" manacost="0">
+  <health now="430" max="430" />
+  <look typeex="0" type="194" head="95" body="94" legs="94" feet="19" corpse="6080" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="0" />
+    <flag targetdistance="4" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="40" />
+    <element firePercent="0" />
+    <element energyPercent="-5" />
+    <element icePercent="20" />
+    <element deathPercent="-5" />
+    <element holyPercent="30" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Praise the voodoo!" />
+    <voice yell="0" sentence="Power to the cult!" />
+    <voice yell="0" sentence="Feel the power of the cult!" />
+  </voices>
+  <defenses mitigation="1.13" defense="0" armor="33" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="90" />
+    <attack name="life drain" interval="3000" chance="70" min="70" max="150" />
+    <attack name="invisible" interval="3000" chance="30" />
+
+    <attack name="self healing" interval="2000" chance="50" min="50" max="50" />
+  </attacks>
+  <loot />
+</monster>

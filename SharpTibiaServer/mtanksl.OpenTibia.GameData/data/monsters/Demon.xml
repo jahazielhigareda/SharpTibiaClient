@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Demon" nameDescription="a demon" race="fire" speed="256" experience="6000" manacost="0">
+  <health now="8200" max="8200" />
+  <look typeex="0" type="35" head="0" body="0" legs="0" feet="0" corpse="5995" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="25" />
+    <element earthpercent="40" />
+    <element firePercent="100" />
+    <element energyPercent="50" />
+    <element icePercent="-12" />
+    <element deathPercent="20" />
+    <element holyPercent="-12" />
+    <element drownPercent="100" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="100" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="1" sentence="MUHAHAHAHA!" />
+    <voice yell="1" sentence="I SMELL FEEEEAAAAAR!" />
+    <voice yell="1" sentence="CHAMEK ATH UTHUL ARAK!" />
+    <voice yell="0" sentence="Your soul will be mine!" />
+    <voice yell="0" sentence="Your resistance is futile!" />
+  </voices>
+  <defenses mitigation="1.74" defense="0" armor="44" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="500" />
+    <attack name="great fireball" interval="3000" chance="70" min="150" max="250" />
+    <attack name="energy beam" interval="3000" chance="70" min="300" max="480" />
+    <attack name="energy strike" interval="3000" chance="70" min="210" max="300" />
+    <attack name="mana drain" interval="3000" chance="70" min="30" max="120" />
+    <attack name="self healing" interval="2000" chance="50" min="80" max="250" />
+    <attack name="fire field" interval="3000" chance="70" min="20" max="20" />
+    <attack name="paralyse" interval="3000" chance="70" />
+  </attacks>
+	<loot>
+		<item id="2148" countmax="200" killsToGetOne="2" /> <!-- gold coin -->
+		<item id="2152" countmax="8" killsToGetOne="2" /> <!-- platinum coin -->
+    <item id="7590" killsToGetOne="4" /> <!-- great mana potion -->
+    <item id="8472" killsToGetOne="5" /> <!-- great spirit potion -->
+		<item id="5954" countmax="1" killsToGetOne="5" /> <!-- demon horn -->
+    <item id="8473" killsToGetOne="5" /> <!-- ultimate health potion -->
+	  <item id="2795" countmax="6" killsToGetOne="6" /> <!-- fire mushroom -->
+		<item id="7368" countmax="10" killsToGetOne="7" /> <!-- assassin star -->
+		<item id="2149" countmax="5" killsToGetOne="11" /> <!-- small emerald -->
+		<item id="2432" killsToGetOne="25" /> <!-- fire axe -->
+    <item id="2151" countmax="4" killsToGetOne="30" /> <!-- talon -->
+		<item id="2176" killsToGetOne="35" /> <!-- orb -->
+    <item id="2214" killsToGetOne="39" /> <!-- ring of healing -->
+		<item id="2164" killsToGetOne="41" /> <!-- might ring -->
+		<item id="2165" killsToGetOne="43" /> <!-- stealth ring -->
+		<item id="2393" killsToGetOne="52" /> <!-- giant sword -->
+    <item id="2396" killsToGetOne="53" /> <!-- ice rapier -->
+    <item id="2418" killsToGetOne="74" /> <!-- golden sickle -->
+		<item id="1982" killsToGetOne="80" /> <!-- purple tome -->
+    <item id="2462" killsToGetOne="81" /> <!-- devil helmet -->
+    <item id="2179" killsToGetOne="96" /> <!-- gold ring -->
+    <item id="2520" killsToGetOne="137" /> <!-- demon shield -->
+    <item id="2171" killsToGetOne="142" /> <!-- platinum amulet -->
+		<item id="2514" killsToGetOne="200" /> <!-- mastermind shield -->
+    <item id="2470" killsToGetOne="261" /> <!-- golden legs -->
+		<item id="2472" killsToGetOne="1251" /> <!-- magic plate armor -->
+    <item id="7382" killsToGetOne="1752" /> <!-- demonrage sword -->
+	</loot>
+</monster>

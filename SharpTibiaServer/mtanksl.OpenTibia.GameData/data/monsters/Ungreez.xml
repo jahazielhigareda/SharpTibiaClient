@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Ungreez" nameDescription="Ungreez" race="fire" speed="240" experience="500" manacost="0">
+  <health now="8200" max="8200" />
+  <look typeex="0" type="35" head="0" body="0" legs="0" feet="0" corpse="5995" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="30" />
+    <element earthpercent="60" />
+    <element firePercent="100" />
+    <element energyPercent="55" />
+    <element icePercent="-5" />
+    <element deathPercent="20" />
+    <element holyPercent="-5" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="I'll teach you that even heros can die" />
+    <voice yell="0" sentence="You wil die Begging like the others did" />
+  </voices>
+  <defenses mitigation="0" defense="0" armor="0" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks />
+  <loot />
+</monster>
