@@ -30,6 +30,9 @@
     <ProjectReference Include="..\mtanksl.OpenTibia.Game\mtanksl.OpenTibia.Game.csproj" />
     <!-- Phase 14: added so ServerConfig and PluginLoader can be exercised in tests. -->
     <ProjectReference Include="..\mtanksl.OpenTibia.Host\mtanksl.OpenTibia.Host.csproj" />
+    <!-- Phase 15: added so DatReader signature validation can be exercised in tests. -->
+    <ProjectReference Include="..\mtanksl.OpenTibia.FileFormats\mtanksl.OpenTibia.FileFormats.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.GameData\mtanksl.OpenTibia.GameData.csproj" />
   </ItemGroup>
 
 </Project>

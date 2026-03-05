@@ -20,8 +20,11 @@ public sealed class DatItemType
 /// </summary>
 public sealed class DatReader
 {
-    /// <summary>Expected signature for Tibia 8.6 dat files.</summary>
-    public const uint SignatureV86 = 0x439C7B00;
+    /// <summary>Expected signature for Tibia 8.60 dat files (official 8.60 release).</summary>
+    public const uint SignatureV860 = 0x4C2C7993;
+
+    /// <summary>Alternate signature accepted for Tibia 8.6x dat files.</summary>
+    public const uint SignatureV86  = 0x439C7B00;
 
     private readonly string _path;
 
@@ -34,7 +37,7 @@ public sealed class DatReader
 
     /// <summary>
     /// Reads the header and item list from the dat file.
-    /// Throws <see cref="InvalidDataException"/> if the signature doesn't match.
+    /// Throws <see cref="InvalidDataException"/> if the signature doesn't match any known 8.6x value.
     /// </summary>
     public void Load()
     {
@@ -42,9 +45,9 @@ public sealed class DatReader
         using var br = new BinaryReader(fs);
 
         uint signature = br.ReadUInt32();
-        if (signature != SignatureV86)
+        if (signature != SignatureV860 && signature != SignatureV86)
             throw new InvalidDataException(
-                $"Unexpected dat signature 0x{signature:X8}. Expected 0x{SignatureV86:X8}.");
+                $"Unexpected dat signature 0x{signature:X8}. Expected 0x{SignatureV860:X8}.");
 
         ushort itemCount    = br.ReadUInt16();
         ushort outfitCount  = br.ReadUInt16();
