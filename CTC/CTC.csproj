@@ -10,6 +10,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!-- Phase 14: declare the three supported self-contained publish targets. -->
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>

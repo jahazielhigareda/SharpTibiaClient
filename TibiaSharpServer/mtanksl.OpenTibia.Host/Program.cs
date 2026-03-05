@@ -20,7 +20,10 @@ Logger.Info("SharpTibiaServer starting…");
 // Configuration — loaded from config.json (replaces config.lua)
 // System.Text.Json is built into .NET 8; no external dependency needed.
 // -----------------------------------------------------------------------
-ServerConfig config = ServerConfig.Load("config.json");
+// Phase 14: resolve config.json relative to the executable directory so it
+// works correctly for both `dotnet run` and self-contained platform publishes.
+ServerConfig config = ServerConfig.Load(
+    Path.Combine(AppContext.BaseDirectory, "config.json"));
 Logger.Info($"Server name : {config.ServerName}");
 Logger.Info($"Login port  : {config.LoginPort}");
 Logger.Info($"Game port   : {config.GamePort}");

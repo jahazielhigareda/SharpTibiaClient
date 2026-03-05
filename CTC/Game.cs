@@ -100,7 +100,9 @@ namespace CTC
         /// </summary>
         private void LoadMovieState()
         {
-            FileInfo file = new FileInfo("./Test.tmv");
+            // Phase 14: resolve relative to the executable directory so the path
+            // works for both `dotnet run` and self-contained platform publishes.
+            FileInfo file = new FileInfo(Path.Combine(AppContext.BaseDirectory, "Test.tmv"));
             Stream virtualStream;
             FileStream fileStream = file.OpenRead();
             if (file.Extension == ".tmv")

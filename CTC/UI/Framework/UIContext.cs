@@ -61,7 +61,8 @@ namespace CTC
         public static void Load()
         {
             // Phase 4: load the TTF font via Raylib instead of XNA Content.Load<SpriteFont>.
-            const string fontPath = "Content/StandardFont.ttf";
+            // Phase 14: use Path.Combine + AppContext.BaseDirectory for cross-platform safety.
+            string fontPath = Path.Combine(AppContext.BaseDirectory, "Content", "StandardFont.ttf");
             StandardFont = Raylib.LoadFontEx(fontPath, StandardFontSize, null, 0);
             if (!Raylib.IsFontReady(StandardFont))
             {

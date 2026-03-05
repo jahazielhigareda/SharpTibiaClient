@@ -216,7 +216,8 @@ namespace CTC
         public void Load()
         {
             // Phase 4: load skin sheet texture from disk using Raylib.
-            const string skinPath = "Content/DefaultSkin.bmp";
+            // Phase 14: use Path.Combine + AppContext.BaseDirectory for cross-platform safety.
+            string skinPath = Path.Combine(AppContext.BaseDirectory, "Content", "DefaultSkin.bmp");
             Image skinImg = Raylib.LoadImage(skinPath);
             if (skinImg.Width > 0)
             {

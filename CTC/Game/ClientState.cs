@@ -23,8 +23,13 @@ namespace CTC
         public ClientState(PacketStream InStream)
         {
             this.InStream = InStream;
-            FileStream datFile = new FileStream("./Tibia.dat", FileMode.Open);
-            FileStream sprFile = new FileStream("./Tibia.spr", FileMode.Open);
+            // Phase 14: use AppContext.BaseDirectory so the paths resolve
+            // correctly for both `dotnet run` and self-contained publishes on
+            // any platform (Windows, Linux, macOS).
+            string datPath = Path.Combine(AppContext.BaseDirectory, "Tibia.dat");
+            string sprPath = Path.Combine(AppContext.BaseDirectory, "Tibia.spr");
+            FileStream datFile = new FileStream(datPath, FileMode.Open);
+            FileStream sprFile = new FileStream(sprPath, FileMode.Open);
             GameData = new TibiaGameData(datFile, sprFile);
             Protocol = new TibiaGameProtocol(GameData);
             Viewport = new ClientViewport(GameData, Protocol);
