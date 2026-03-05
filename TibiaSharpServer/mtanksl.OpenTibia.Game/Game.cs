@@ -53,17 +53,24 @@ internal sealed class GameContext : IContext
 
 /// <summary>
 /// Central game engine: owns the <see cref="GameScheduler"/>, manages player
-/// connections, and coordinates with the data layer.
+/// connections, and coordinates with the data layer and script registry.
 /// </summary>
 public sealed class GameEngine : IDisposable
 {
-    private readonly GameScheduler _scheduler;
-    private readonly GameState     _state;
-    private readonly IUnitOfWork   _data;
+    private readonly GameScheduler    _scheduler;
+    private readonly GameState        _state;
+    private readonly IUnitOfWork      _data;
+    private readonly IScriptDispatcher? _registry;
 
-    public GameEngine(IUnitOfWork data)
+    /// <param name="data">Unit-of-work for player/account persistence.</param>
+    /// <param name="registry">
+    /// Optional script registry.  When provided, lifecycle events (login,
+    /// logout, death, spells) are dispatched to registered scripts.
+    /// </param>
+    public GameEngine(IUnitOfWork data, IScriptDispatcher? registry = null)
     {
         _data      = data;
+        _registry  = registry;
         _scheduler = new GameScheduler();
         _state     = new GameState();
     }
@@ -83,11 +90,23 @@ public sealed class GameEngine : IDisposable
         return tcs.Task;
     }
 
+    private IContext CreateContext() => new GameContext(_state, _scheduler);
+
     /// <summary>
-    /// Loads a player from the database and adds them to the game.
-    /// Called on the game thread.
+    /// Creates an <see cref="IContext"/> for use outside the <c>Game</c> project
+    /// (e.g. by the host when dispatching startup/shutdown global events).
     /// </summary>
-    public Player? LoginPlayer(string name)
+    public IContext CreatePublicContext() => CreateContext();
+
+    // -----------------------------------------------------------------------
+    // Player lifecycle
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Loads a player from the database, adds them to the live game state,
+    /// and dispatches <c>OnLogin</c> scripts.
+    /// </summary>
+    public async Task<Player?> LoginPlayerAsync(string name)
     {
         var record = _data.Players.FindByName(name);
         if (record == null)
@@ -110,17 +129,69 @@ public sealed class GameEngine : IDisposable
 
         _state.AddPlayer(player);
         Logger.Info($"Player '{player.Name}' logged in at {player.Position}.");
+
+        if (_registry != null)
+            await DispatchLoginAsync(player);
+
         return player;
     }
 
-    /// <summary>Logs a player out and persists their state.</summary>
-    public void LogoutPlayer(uint playerId)
+    /// <summary>Logs a player out, dispatches <c>OnLogout</c> scripts, then removes them.</summary>
+    public async Task LogoutPlayerAsync(uint playerId)
     {
         if (!_state.Players.TryGetValue(playerId, out var player))
             return;
 
+        if (_registry != null)
+            await DispatchLogoutAsync(player);
+
         _state.RemovePlayer(playerId);
         Logger.Info($"Player '{player.Name}' logged out.");
+    }
+
+    // -----------------------------------------------------------------------
+    // Script dispatch helpers
+    // -----------------------------------------------------------------------
+
+    /// <summary>Dispatches <c>OnLogin</c> to all registered <see cref="ICreatureScript"/>s.</summary>
+    public Task DispatchLoginAsync(Player player)
+    {
+        if (_registry == null) return Task.CompletedTask;
+        return DispatchOnRegistryAsync(ctx => _registry.DispatchLoginAsync(ctx, player));
+    }
+
+    /// <summary>Dispatches <c>OnLogout</c> to all registered <see cref="ICreatureScript"/>s.</summary>
+    public Task DispatchLogoutAsync(Player player)
+    {
+        if (_registry == null) return Task.CompletedTask;
+        return DispatchOnRegistryAsync(ctx => _registry.DispatchLogoutAsync(ctx, player));
+    }
+
+    /// <summary>Dispatches <c>OnDeath</c> to all registered <see cref="ICreatureScript"/>s.</summary>
+    public Task DispatchDeathAsync(Creature creature)
+    {
+        if (_registry == null) return Task.CompletedTask;
+        return DispatchOnRegistryAsync(ctx => _registry.DispatchDeathAsync(ctx, creature));
+    }
+
+    /// <summary>Dispatches a spell cast to the matching <see cref="ISpellScript"/>.</summary>
+    public Task DispatchSpellAsync(Player caster, string words)
+    {
+        if (_registry == null) return Task.CompletedTask;
+        return DispatchOnRegistryAsync(ctx => _registry.DispatchSpellAsync(ctx, caster, words));
+    }
+
+    /// <summary>Dispatches an NPC interaction to the matching <see cref="INpcScript"/>.</summary>
+    public Task DispatchNpcSayAsync(Player player, string words, Npc npc)
+    {
+        if (_registry == null) return Task.CompletedTask;
+        return DispatchOnRegistryAsync(ctx => _registry.DispatchNpcSayAsync(ctx, player, words, npc));
+    }
+
+    private Task DispatchOnRegistryAsync(Func<IContext, Task> dispatch)
+    {
+        var ctx = CreateContext();
+        return dispatch(ctx);
     }
 
     public void Dispose()

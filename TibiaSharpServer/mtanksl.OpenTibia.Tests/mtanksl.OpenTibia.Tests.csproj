@@ -26,6 +26,8 @@
     <ProjectReference Include="..\mtanksl.OpenTibia.Data.InMemory\mtanksl.OpenTibia.Data.InMemory.csproj" />
     <ProjectReference Include="..\mtanksl.OpenTibia.Common\mtanksl.OpenTibia.Common.csproj" />
     <ProjectReference Include="..\mtanksl.OpenTibia.Game.Common\mtanksl.OpenTibia.Game.Common.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Plugins\mtanksl.OpenTibia.Plugins.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Game\mtanksl.OpenTibia.Game.csproj" />
   </ItemGroup>
 
 </Project>

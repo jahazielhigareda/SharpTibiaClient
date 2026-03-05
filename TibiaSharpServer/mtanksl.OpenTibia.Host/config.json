@@ -1,0 +1,13 @@
+{
+  "loginPort": 7171,
+  "gamePort": 7172,
+  "statusPort": 7171,
+  "maxPlayers": 1000,
+  "serverName": "SharpTibiaServer",
+  "dataDirectory": "data",
+  "pluginsDirectory": "plugins",
+  "experience": {
+    "stage1Multiplier": 5,
+    "stage1MaxLevel": 8
+  }
+}
