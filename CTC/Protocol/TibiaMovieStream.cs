@@ -97,7 +97,7 @@ namespace CTC
             return PendingPackets.Count > 0 || Time.TotalGameTime > NextTime;
         }
 
-        public NetworkMessage Read(GameTime Time)
+        public NetworkMessage? Read(GameTime? Time)
         {
             if (PendingPackets.Count > 0)
                 return PendingPackets.Dequeue();

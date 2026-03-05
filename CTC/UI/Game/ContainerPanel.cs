@@ -11,7 +11,7 @@ namespace CTC
     class ContainerPanel : UIVirtualFrame
     {
         ClientViewport Viewport;
-        GameRenderer Renderer;
+        GameRenderer? Renderer;
         public readonly int ContainerID;
 
         public ContainerPanel(ClientViewport Viewport, int ContainerID)
@@ -56,7 +56,7 @@ namespace CTC
             if (Container.ContainerID != ContainerID)
                 return;
 
-            GetSubviewWithTag("_ContainerUpButton").Visible = false;
+            GetSubviewWithTag("_ContainerUpButton")!.Visible = false;
 
             // Update the title
             Name = Container.Name;

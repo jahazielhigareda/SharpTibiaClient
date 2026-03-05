@@ -206,9 +206,9 @@ namespace CTC
                 Vector2.Zero, 0f, Color.White);
         }
 
-        public ColorGradient Gradient(String Name)
+        public ColorGradient? Gradient(String Name)
         {
-            ColorGradient cg = null;
+            ColorGradient? cg = null;
             Gradients.TryGetValue(Name, out cg);
             return cg;
         }

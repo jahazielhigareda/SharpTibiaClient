@@ -65,7 +65,7 @@ namespace CTC
         /// Fired when the scrollbar has changed it's position.
         /// This can happen both through user interaction and programmatic action.
         /// </summary>
-        public event ScrollbarEvent ScrollbarMoved;
+        public event ScrollbarEvent? ScrollbarMoved;
 
         /// <summary>
         /// Constructor of the scrollbar

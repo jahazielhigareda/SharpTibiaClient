@@ -45,18 +45,19 @@ namespace CTC
                 Tiles.Remove(Position);
         }
 
-        public ClientTile this [MapPosition Position]
+        public ClientTile? this [MapPosition Position]
         {
             get
             {
-                ClientTile Tile = null;
+                ClientTile? Tile = null;
                 if (Tiles.TryGetValue(Position, out Tile))
                     return Tile;
                 return null;
             }
             set
             {
-                Tiles[value.Position] = value;
+                if (value != null)
+                    Tiles[value.Position] = value;
             }
         }
     }

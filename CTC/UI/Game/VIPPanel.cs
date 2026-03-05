@@ -10,7 +10,7 @@ namespace CTC
 {
     public class VIPPanel : UIVirtualFrame
     {
-        ClientViewport Viewport;
+        ClientViewport? Viewport;
 
         /// <summary>
         /// Need a reference to be able to unsubscribe to state change events.
@@ -29,7 +29,7 @@ namespace CTC
             ViewportChanged(Desktop.ActiveViewport);
         }
 
-        protected void ViewportChanged(ClientViewport NewViewport)
+        protected void ViewportChanged(ClientViewport? NewViewport)
         {
             if (Viewport != null)
                 Viewport.VIPStatusChanged -= VIPStatusChanged;

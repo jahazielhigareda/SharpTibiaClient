@@ -10,7 +10,7 @@ namespace CTC
         /// <summary>
         ///  A list of all items inside this container
         /// </summary>
-        public List<ClientItem> Contents;
+        public List<ClientItem> Contents = new List<ClientItem>();
 
         /// <summary>
         /// The maximum amount of items that fit inside this container.
@@ -46,7 +46,7 @@ namespace CTC
             Name = "CID#" + ContainerID.ToString();
         }
 
-        public ClientItem GetItem(int index)
+        public ClientItem? GetItem(int index)
         {
             if (index >= Contents.Count)
                 return null;

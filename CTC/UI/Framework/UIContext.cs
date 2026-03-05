@@ -28,7 +28,7 @@ namespace CTC
         /// </summary>
         public static GameTime GameTime = null!; // assigned each frame in Update()
 
-        public static UIView MouseFocusedPanel = null!; // null until a panel captures mouse
+        public static UIView? MouseFocusedPanel = null; // null until a panel captures mouse
         public static Boolean SkinChanged;
         public static UISkin Skin = null!; // assigned in Load()
 

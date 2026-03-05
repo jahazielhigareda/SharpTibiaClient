@@ -43,7 +43,7 @@ namespace CTC
             {
                 try
                 {
-                    NetworkMessage nmsg = InStream.Read(Time);
+                    NetworkMessage? nmsg = InStream.Read(Time);
                     if (nmsg == null)
                         return;
                     Protocol.parsePacket(nmsg);
@@ -63,7 +63,7 @@ namespace CTC
             TibiaMovieStream Movie = (TibiaMovieStream)InStream;
 
             while (Movie.Elapsed.TotalSeconds < Span.TotalSeconds)
-                Protocol.parsePacket(Movie.Read(null));
+                Protocol.parsePacket(Movie.Read(null)!);
         }
 
         public void Update(GameTime Time)

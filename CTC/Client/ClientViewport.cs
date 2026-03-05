@@ -40,7 +40,7 @@ namespace CTC
         /// <summary>
         /// ;
         /// </summary>
-        public List<ClientItem> Inventory = new List<ClientItem>(12);
+        public List<ClientItem?> Inventory = new List<ClientItem?>(12);
 
         /// <summary>
         /// Open containers
@@ -50,7 +50,7 @@ namespace CTC
         /// <summary>
         /// Our avatar on the map, will also be in the Creatures list.
         /// </summary>
-        public ClientPlayer Player;
+        public ClientPlayer Player = null!;
 
         /// <summary>
         /// Current position of the view on the map
@@ -101,14 +101,14 @@ namespace CTC
         /// <summary>
         /// 
         /// </summary>
-        public event LoginEvent Login;
+        public event LoginEvent? Login;
 
         /// <summary>
         /// Fired when a new container is opened.
         /// Do not store the ClientContainer as it might be replace
         /// be calls to UpdateContainer, instead store the ContanerID.
         /// </summary>
-        public event ContainerEvent OpenContainer;
+        public event ContainerEvent? OpenContainer;
 
         /// <summary>
         /// Fired when a container has been updated.
@@ -116,17 +116,17 @@ namespace CTC
         /// container changed, do NOT use the ClientContainer as it might be an
         /// entirely new container.
         /// </summary>
-        public event ContainerEvent UpdateContainer;
+        public event ContainerEvent? UpdateContainer;
 
         /// <summary>
         /// A container was closed, check the ContainerID to figure out which one it was.
         /// </summary>
-        public event ContainerEvent CloseContainer;
+        public event ContainerEvent? CloseContainer;
 
         /// <summary>
         /// Fired when a VIP is added, logs in or logs out.
         /// </summary>
-        public event VIPEvent VIPStatusChanged;
+        public event VIPEvent? VIPStatusChanged;
 
         // Phase 10: fired when the server opens or closes the NPC shop window.
         public event ShopEvent? ShopOpened;
@@ -193,7 +193,7 @@ namespace CTC
         /// </summary>
         /// <param name="CreatureID"></param>
         /// <returns></returns>
-        private ClientCreature GetCreature(UInt32 CreatureID)
+        private ClientCreature? GetCreature(UInt32 CreatureID)
         {
             if (Creatures.ContainsKey(CreatureID))
                 return Creatures[CreatureID];
@@ -263,25 +263,25 @@ namespace CTC
             MapPosition Position = (MapPosition)props["Position"];
             ClientThing Thing = (ClientThing)props["Thing"];
             Boolean Push = (Boolean)props["Push"];
-            Map[Position].Add(Thing, Push);
+            Map[Position]!.Add(Thing, Push);
         }
 
         private void OnRemoveThing(Packet props)
         {
             MapPosition Position = (MapPosition)props["Position"];
             int StackIndex = (int)props["StackIndex"];
-            Map[Position].Remove(StackIndex);
+            Map[Position]!.Remove(StackIndex);
         }
 
         private void OnRefreshTile(Packet props)
         {
-            ClientTile Tile = Map[(MapPosition)props["Position"]];
+            ClientTile? Tile = Map[(MapPosition)props["Position"]];
             Boolean Clear = (Boolean)props["Clear"];
 
             if (Clear)
-                Tile.Objects.Clear();
+                Tile!.Objects.Clear();
             else
-                Map[Tile.Position] = (ClientTile)props["NewTile"];
+                Map[Tile!.Position] = (ClientTile)props["NewTile"];
         }
 
         private void OnTransformThing(Packet props)
@@ -294,7 +294,7 @@ namespace CTC
                 if (Thing is ClientCreature)
                     ((ClientCreature)Thing).Direction = (Direction)props["Direction"];
 
-            Map[Position].Replace(StackIndex, Thing);
+            Map[Position]!.Replace(StackIndex, Thing);
         }
 
         private void OnMapDescription(Packet props)
@@ -339,8 +339,8 @@ namespace CTC
             int StackIndex = (int)props["OldStackIndex"];
             MapPosition ToPosition = (MapPosition)props["Position"];
 
-            ClientTile FromTile = Map[OldPosition];
-            ClientTile ToTile = Map[ToPosition];
+            ClientTile? FromTile = Map[OldPosition];
+            ClientTile? ToTile = Map[ToPosition];
 
             if (FromTile == null || ToTile == null)
             {
@@ -348,11 +348,11 @@ namespace CTC
                 return;
             }
 
-            ClientCreature Creature = (ClientCreature)FromTile.GetByIndex(StackIndex);
-            FromTile.Remove(Creature);
-            ToTile.Add(Creature, true);
+            ClientCreature? Creature = (ClientCreature?)FromTile!.GetByIndex(StackIndex);
+            FromTile.Remove(Creature!);
+            ToTile!.Add(Creature!, true);
 
-            Creature.Move(OldPosition, ToPosition);
+            Creature!.Move(OldPosition, ToPosition);
         }
 
         private void OnCreatureTurn(Packet props)
@@ -398,7 +398,7 @@ namespace CTC
 
         private void OnVIPState(Packet props)
         {
-            ClientCreature Creature = null;
+            ClientCreature? Creature = null;
             if (!VIPList.TryGetValue((UInt32)props["CreatureID"], out Creature))
             {
                 Creature = new ClientCreature((UInt32)props["CreatureID"]);

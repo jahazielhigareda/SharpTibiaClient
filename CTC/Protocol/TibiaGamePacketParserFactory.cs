@@ -27,7 +27,7 @@ namespace CTC
             get {
                 if (Data.ContainsKey(key))
                     return Data[key];
-                return null;
+                throw new System.Collections.Generic.KeyNotFoundException($"Key '{key}' not found in Packet.");
             }
             set { Data[key] = value; }
         }
@@ -49,13 +49,13 @@ namespace CTC
     /// </summary>
     /// <param name="nmsg">The message to parse, there may be data left over after the initial parsing.</param>
     /// <returns></returns>
-    public delegate Packet GamePacketParser(NetworkMessage nmsg);
+    public delegate Packet? GamePacketParser(NetworkMessage nmsg);
 
     public class PacketParser
     {
         public int type;
-        public string name;
-        public GamePacketParser parser;
+        public string name  = "";
+        public GamePacketParser? parser;
     }
 
     class CreatureTurn2Exception : ProtocolException
@@ -79,7 +79,7 @@ namespace CTC
         /// <summary>
         /// We need to track the player so we can handle it correctly
         /// </summary>
-        private ClientPlayer Player;
+        private ClientPlayer Player = null!;
 
         private Dictionary<uint, ClientCreature> KnownCreatures = new Dictionary<uint, ClientCreature>();
 
@@ -98,7 +98,7 @@ namespace CTC
                 System.Xml.XmlNodeList Versions = XMLData.GetElementsByTagName("TibiaVersion");
                 foreach (System.Xml.XmlNode versionNode in Versions)
                 {
-                    int version = int.Parse(versionNode.Attributes["id"].InnerText);
+                    int version = int.Parse(versionNode.Attributes!["id"]!.InnerText);
                     if (version != GameData.Version)
                         continue;
 
@@ -107,14 +107,14 @@ namespace CTC
                         if (packetNode.LocalName == "Packet")
                         {
                             PacketParser ph = new PacketParser();
-                            string n = packetNode.Attributes["type"].InnerText;
-                            if (!int.TryParse(packetNode.Attributes["type"].InnerText.Substring(2), 
+                            string n = packetNode.Attributes!["type"]!.InnerText;
+                            if (!int.TryParse(packetNode.Attributes!["type"]!.InnerText.Substring(2), 
                                     System.Globalization.NumberStyles.HexNumber,
                                     System.Globalization.CultureInfo.InvariantCulture,
                                     out ph.type))
                                 continue;
 
-                            ph.name = packetNode.Attributes["parser"].InnerText;
+                            ph.name = packetNode.Attributes!["parser"]!.InnerText;
                             ph.parser = GetPacketParser(ph.name);
                             AllHandlers.Add(ph);
                         }
@@ -220,7 +220,7 @@ namespace CTC
                     int ContainerID = (int)nmsg.ReadByte();
                     props["ContainerID"] = ContainerID;
                     int ClientID = nmsg.ReadU16();
-                    ItemType it = GameData.GetItemType(ClientID);
+                    ItemType? it = GameData.GetItemType(ClientID);
                     if (it == null)
                     {
                         Log.Warning("OpenContainer contains unrecognized item type (" + ClientID.ToString() + ").", this);
@@ -925,7 +925,7 @@ namespace CTC
             if (clientID == 0)
                 clientID = nmsg.ReadU16();
             int subtype = -1;
-            ItemType it = GameData.GetItemType(clientID);
+            ItemType? it = GameData.GetItemType(clientID);
             if (it == null)
             {
                 Log.Warning("Item packet contains unrecognizabe item (" + clientID + ")");
@@ -946,7 +946,7 @@ namespace CTC
         /// <returns></returns>
         private ClientCreature ReadCreature(NetworkMessage nmsg, UInt32 CreatureID)
         {
-            ClientCreature Creature = null;
+            ClientCreature? Creature = null;
             if (CreatureID == Player.ID)
                 Creature = Player;
             else if (!KnownCreatures.TryGetValue(CreatureID, out Creature))
@@ -987,7 +987,7 @@ namespace CTC
             Creature.Skull = (CreatureSkull)nmsg.ReadByte();
             Creature.Shield = (PartyShield)nmsg.ReadByte();
 
-            return Creature;
+            return Creature!;
         }
     }
 }

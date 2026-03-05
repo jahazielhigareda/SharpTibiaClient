@@ -14,7 +14,7 @@ namespace CTC
 
         public readonly MapPosition Position;
 
-        public ClientItem Ground = null;
+        public ClientItem? Ground = null;
         public List<ClientThing> Objects = new List<ClientThing>();
 
         public void Add(ClientThing Thing, bool Push = false)
@@ -29,7 +29,7 @@ namespace CTC
             }
 
             if (Objects.Count >= 10)
-                Objects.Remove(GetByIndex(9));
+                Objects.Remove(GetByIndex(9)!);
 
             int index = 0;
             for (index = 0; index < Objects.Count; ++index)
@@ -57,7 +57,7 @@ namespace CTC
 
         public bool Remove(int index)
         {
-            return Remove(GetByIndex(index));
+            return Remove(GetByIndex(index)!);
         }
 
         public void Replace(int index, ClientThing NewThing)
@@ -68,7 +68,7 @@ namespace CTC
                 Objects[index - 1] = NewThing;
         }
 
-        public ClientThing GetByIndex(int index)
+        public ClientThing? GetByIndex(int index)
         {
             if (index == 0)
                 return Ground;

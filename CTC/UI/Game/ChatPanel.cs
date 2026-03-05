@@ -26,7 +26,7 @@ namespace CTC
 
         #region Data Members
 
-        ClientViewport Viewport;
+        ClientViewport? Viewport;
 
         #endregion
 

@@ -13,7 +13,7 @@ namespace CTC
     /// </summary>
     class SkillPanel : UIVirtualFrame
     {
-        protected ClientViewport Viewport;
+        protected ClientViewport? Viewport;
         
         /// <summary>
         /// Need a reference to be able to unsubscribe to state change events.
@@ -32,7 +32,7 @@ namespace CTC
             ViewportChanged(Desktop.ActiveViewport);
         }
 
-        protected void ViewportChanged(ClientViewport NewViewport)
+        protected void ViewportChanged(ClientViewport? NewViewport)
         {
             ContentView.RemoveAllSubviews();
 
@@ -105,8 +105,8 @@ namespace CTC
 
         public delegate SkillValue SkillInspector();
 
-        private SkillInspector Inspector;
-        private ClientSkill Skill;
+        private SkillInspector Inspector = null!;
+        private ClientSkill Skill = null!;
         private UILabel NameLabel;
         private UILabel ValueLabel;
 

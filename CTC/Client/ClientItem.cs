@@ -23,7 +23,7 @@ namespace CTC
         }
         public int Subtype;
 
-        public GameSprite Sprite
+        public GameSprite? Sprite
         {
             get
             {

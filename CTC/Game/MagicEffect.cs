@@ -10,14 +10,14 @@ namespace CTC
     public class MagicEffect : GameEffect
     {
         public readonly int ID;
-        public readonly GameSprite Sprite;
+        public readonly GameSprite? Sprite;
         public int Frame;
 
         public MagicEffect(TibiaGameData GameData, int ID)
         {
             this.ID = ID;
             Sprite = GameData.GetEffectSprite(ID);
-            this.Duration = Sprite.AnimationLength / 10.0;
+            this.Duration = Sprite!.AnimationLength / 10.0;
         }
 
         public override void  Update(GameTime Time)
@@ -25,7 +25,7 @@ namespace CTC
  	        base.Update(Time);
 
             Frame = (int)(Elapsed * 10);
-            if (Frame >= Sprite.AnimationLength)
+            if (Frame >= Sprite!.AnimationLength)
                 Frame = Sprite.AnimationLength;
         }
     }

@@ -22,7 +22,7 @@ namespace CTC
 
         private ClientViewport Viewport;
         private TibiaGameProtocol Protocol;
-        private GameRenderer Renderer;
+        private GameRenderer? Renderer;
 
         private double LastCleanup = 0;
 
@@ -115,7 +115,7 @@ namespace CTC
             // 1. Render the game scene into the off-screen render texture.
             Raylib.BeginTextureMode(Backbuffer);
             Raylib.ClearBackground(Color.Black);
-            Renderer.DrawScene(UIContext.GameTime, Viewport, PlayingAnimations);
+            Renderer!.DrawScene(UIContext.GameTime, Viewport, PlayingAnimations);
             Raylib.EndTextureMode();
 
             // 2. Blit the render texture to the screen inside this view's clip rect.
@@ -133,7 +133,7 @@ namespace CTC
             // 3. Draw creature bars and animated text (foreground overlay, same coordinate space).
             Vector2 Offset = new Vector2(scb.X, scb.Y);
             Vector2 Scale  = new Vector2(Bounds.Width / 480f, Bounds.Height / 352f);
-            Renderer.DrawSceneForeground(Offset, Scale, UIContext.GameTime, Viewport, PlayingAnimations);
+            Renderer!.DrawSceneForeground(Offset, Scale, UIContext.GameTime, Viewport, PlayingAnimations);
 
             // 4. Draw the window border.
             DrawBorder();
@@ -176,7 +176,7 @@ namespace CTC
             Max.Y = Math.Max(FromPosition.Y, ToPosition.Y);
             Max.Z = ToPosition.Z;
 
-            TileAnimations Animations = null;
+            TileAnimations? Animations = null;
             if (!PlayingAnimations.TryGetValue(Max, out Animations))
             {
                 Animations = new TileAnimations();
@@ -190,7 +190,7 @@ namespace CTC
             MapPosition Position = (MapPosition)props["Position"];
             MagicEffect Effect = new MagicEffect(Viewport.GameData, (int)props["Effect"]);
 
-            TileAnimations Animations = null;
+            TileAnimations? Animations = null;
             if (!PlayingAnimations.TryGetValue(Position, out Animations))
             {
                 Animations = new TileAnimations();
@@ -205,7 +205,7 @@ namespace CTC
             String Text = (String)props["Text"];
             int Color = (int)props["Color"];
 
-            TileAnimations Animations = null;
+            TileAnimations? Animations = null;
             if (!PlayingAnimations.TryGetValue(Position, out Animations))
             {
                 Animations = new TileAnimations();

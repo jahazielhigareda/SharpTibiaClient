@@ -17,7 +17,7 @@ namespace CTC
         /// Reads the next packet from the stream and returns it.
         /// </summary>
         /// <returns>The next packet, or null if we've reached the end of the stream.</returns>
-        NetworkMessage Read(GameTime Time);
+        NetworkMessage? Read(GameTime? Time);
 
         /// <summary>
         /// The name of the stream (filename or hostname)
