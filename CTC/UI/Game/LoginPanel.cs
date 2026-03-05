@@ -25,13 +25,13 @@ namespace CTC
         // -------------------------------------------------------------------------
         // Widgets
         // -------------------------------------------------------------------------
-        private UITextbox _hostBox;
-        private UITextbox _portBox;
-        private UITextbox _accountBox;
-        private UITextbox _passwordBox;
-        private UIButton  _connectButton;
-        private UIButton  _enterButton;
-        private UILabel   _statusLabel;
+        private UITextbox _hostBox      = null!;
+        private UITextbox _portBox      = null!;
+        private UITextbox _accountBox   = null!;
+        private UITextbox _passwordBox  = null!;
+        private UIButton  _connectButton = null!;
+        private UIButton  _enterButton  = null!;
+        private UILabel   _statusLabel  = null!;
 
         // Character list rows (recreated after successful login)
         private readonly List<CharacterRowButton> _charRows = new List<CharacterRowButton>();

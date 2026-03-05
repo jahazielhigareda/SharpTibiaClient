@@ -206,9 +206,9 @@ namespace CTC
                 Vector2.Zero, 0f, Color.White);
         }
 
-        public ColorGradient Gradient(String Name)
+        public ColorGradient? Gradient(String Name)
         {
-            ColorGradient cg = null;
+            ColorGradient? cg = null;
             Gradients.TryGetValue(Name, out cg);
             return cg;
         }
@@ -216,7 +216,8 @@ namespace CTC
         public void Load()
         {
             // Phase 4: load skin sheet texture from disk using Raylib.
-            const string skinPath = "Content/DefaultSkin.bmp";
+            // Phase 14: use Path.Combine + AppContext.BaseDirectory for cross-platform safety.
+            string skinPath = Path.Combine(AppContext.BaseDirectory, "Content", "DefaultSkin.bmp");
             Image skinImg = Raylib.LoadImage(skinPath);
             if (skinImg.Width > 0)
             {

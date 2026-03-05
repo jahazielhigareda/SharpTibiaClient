@@ -70,7 +70,7 @@ namespace CTC
 
         public delegate void ButtonToggledEvent(UIToggleButton Button, MouseState mouse);
 
-        public event ButtonToggledEvent ButtonToggled;
+        public event ButtonToggledEvent? ButtonToggled;
 
         public UIToggleButton(String Label = "")
         {

@@ -9,7 +9,7 @@ namespace CTC
     public class DistanceEffect : GameEffect
     {
         public readonly int ID;
-        public readonly GameSprite Sprite;
+        public readonly GameSprite? Sprite;
         public int Frame;
         public Vector2 Offset;
         private Vector2 Speed;

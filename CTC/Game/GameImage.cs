@@ -19,7 +19,7 @@ namespace CTC
     {
         public int ID;
         private TibiaGameData GameData;
-        private Byte[] Dump;
+        private Byte[]? Dump;
 
         // Phase 5: Raylib texture handle, lazily loaded from RGBA bytes.
         private Raylib_cs.Texture2D _handle;

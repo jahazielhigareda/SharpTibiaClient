@@ -28,6 +28,8 @@
     <ProjectReference Include="..\mtanksl.OpenTibia.Game.Common\mtanksl.OpenTibia.Game.Common.csproj" />
     <ProjectReference Include="..\mtanksl.OpenTibia.Plugins\mtanksl.OpenTibia.Plugins.csproj" />
     <ProjectReference Include="..\mtanksl.OpenTibia.Game\mtanksl.OpenTibia.Game.csproj" />
+    <!-- Phase 14: added so ServerConfig and PluginLoader can be exercised in tests. -->
+    <ProjectReference Include="..\mtanksl.OpenTibia.Host\mtanksl.OpenTibia.Host.csproj" />
   </ItemGroup>
 
 </Project>

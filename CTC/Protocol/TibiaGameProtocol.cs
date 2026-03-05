@@ -30,7 +30,7 @@ namespace CTC
         public class ProtocolEvent
         {
             public delegate void Handler(Packet props);
-            public event Handler evt;
+            public event Handler? evt;
 
             public ProtocolEvent()
             {
@@ -124,8 +124,8 @@ namespace CTC
         /// <param name="data"></param>
         public TibiaGameProtocol(TibiaGameData data)
         {
-            Stream f = Assembly.GetExecutingAssembly().GetManifestResourceStream("CTC.TibiaProtocolMap.xml");
-            Factory = new TibiaGamePacketParserFactory(f, data);
+            Stream? f = Assembly.GetExecutingAssembly().GetManifestResourceStream("CTC.TibiaProtocolMap.xml");
+            Factory = new TibiaGamePacketParserFactory(f!, data);
 
             AddPacketHandler("ErrorMessage", ErrorMessage);
             AddPacketHandler("MOTD", MOTD);
@@ -206,7 +206,7 @@ namespace CTC
             if (PacketParsers.ContainsKey(packetType))
             {
                 PacketParser pp = PacketParsers[packetType];
-                Packet p = pp.parser(nmsg);
+                Packet? p = pp.parser?.Invoke(nmsg);
                 ProtocolEvent handler = PacketHandlers[packetType];
                 if (handler != null && p != null)
                     handler.Invoke(p);

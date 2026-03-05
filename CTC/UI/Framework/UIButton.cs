@@ -69,11 +69,11 @@ namespace CTC
 
         public delegate void ButtonPressedEvent(UIButton Button, MouseState mouse);
 
-        public event ButtonPressedEvent ButtonPressed;
-        public event ButtonPressedEvent ButtonDragged;
-        public event ButtonPressedEvent ButtonReleased;
-        public event ButtonPressedEvent ButtonReleasedInside;
-        public event ButtonPressedEvent ButtonReleasedOutside;
+        public event ButtonPressedEvent? ButtonPressed;
+        public event ButtonPressedEvent? ButtonDragged;
+        public event ButtonPressedEvent? ButtonReleased;
+        public event ButtonPressedEvent? ButtonReleasedInside;
+        public event ButtonPressedEvent? ButtonReleasedOutside;
 
         public UIButton(String Label = "")
         {

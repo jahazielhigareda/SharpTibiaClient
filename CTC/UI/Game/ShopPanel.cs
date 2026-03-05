@@ -25,12 +25,12 @@ namespace CTC
         private bool _buyTab = true;
 
         // Widgets
-        private UIButton       _buyTabBtn;
-        private UIButton       _sellTabBtn;
-        private UIVirtualFrame _offerList;
-        private UITextbox      _amountBox;
-        private UILabel        _totalLabel;
-        private UIButton       _okButton;
+        private UIButton       _buyTabBtn  = null!;
+        private UIButton       _sellTabBtn = null!;
+        private UIVirtualFrame _offerList  = null!;
+        private UITextbox      _amountBox  = null!;
+        private UILabel        _totalLabel = null!;
+        private UIButton       _okButton   = null!;
 
         // Currently selected offer
         private ClientShopOffer? _selected;

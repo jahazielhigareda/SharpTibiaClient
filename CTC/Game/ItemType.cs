@@ -10,7 +10,7 @@ namespace CTC
         public static ItemType NullType = new ItemType(0, null);
 
         public readonly UInt16 ID;
-        public readonly GameSprite Sprite;
+        public readonly GameSprite? Sprite;
 
         public int WalkSpeed = 100;
         public Boolean DontFallThrough = false;
@@ -49,7 +49,7 @@ namespace CTC
         public Boolean IsFloorChanger = false;
         public Boolean IsWall = false;
 
-        public ItemType(UInt16 id, GameSprite Sprite)
+        public ItemType(UInt16 id, GameSprite? Sprite)
         {
             this.ID = id;
             this.Sprite = Sprite;

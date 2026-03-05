@@ -9,7 +9,7 @@ namespace CTC
     public class GameFrame : UITabFrame
     {
         List<GameCanvas> Canvas = new List<GameCanvas>();
-        GameCanvas ActiveCanvas = null;
+        GameCanvas? ActiveCanvas = null;
 
         public GameFrame()
         {

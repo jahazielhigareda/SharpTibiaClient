@@ -103,6 +103,15 @@ public sealed class Connection : IAsyncDisposable
         await _stream.WriteAsync(body,   ct);
     }
 
+    /// <summary>
+    /// Writes raw bytes without a length prefix.
+    /// Used for the 4-byte login challenge sent immediately after connection.
+    /// </summary>
+    public async Task WriteRawAsync(byte[] data, CancellationToken ct = default)
+    {
+        await _stream.WriteAsync(data, ct);
+    }
+
     public async ValueTask DisposeAsync()
     {
         await _stream.DisposeAsync();

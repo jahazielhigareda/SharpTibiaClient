@@ -10,10 +10,10 @@ namespace CTC
 {
     class ItemButton : UIButton
     {
-        public GameRenderer Renderer;
-        public ClientItem Item;
+        public GameRenderer? Renderer;
+        public ClientItem? Item;
 
-        public ItemButton(GameRenderer Renderer, ClientItem Item)
+        public ItemButton(GameRenderer? Renderer, ClientItem? Item)
         {
             this.Item = Item;
             this.Renderer = Renderer;
@@ -54,17 +54,17 @@ namespace CTC
     /// </summary>
     class InventoryItemButton : ItemButton
     {
-        protected ClientViewport Viewport;
+        protected ClientViewport? Viewport;
         protected InventorySlot Slot = InventorySlot.None;
 
-        public InventoryItemButton(ClientViewport Viewport, InventorySlot Slot)
+        public InventoryItemButton(ClientViewport? Viewport, InventorySlot Slot)
             : base(null, null)
         {
             this.Viewport = Viewport;
             this.Slot = Slot;
         }
 
-        public void ViewportChanged(ClientViewport NewViewport)
+        public void ViewportChanged(ClientViewport? NewViewport)
         {
             Viewport = NewViewport;
         }

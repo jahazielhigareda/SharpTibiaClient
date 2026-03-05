@@ -10,7 +10,7 @@ namespace CTC
     /// </summary>
     public class Log
     {
-        public static Log Instance;
+        public static Log Instance = null!;
 
         public enum Level
         {
@@ -24,8 +24,8 @@ namespace CTC
         public class Message
         {
             public Level level;
-            public string text;
-            public object sender;
+            public string text  = "";
+            public object? sender;
             public DateTime time;
         }
 
@@ -34,10 +34,10 @@ namespace CTC
             Instance = new Log();
         }
 
-        public delegate void LogMessageHandler(object sender, Message message);
-        public event LogMessageHandler OnLogMessage;
+        public delegate void LogMessageHandler(object? sender, Message message);
+        public event LogMessageHandler? OnLogMessage;
 
-        private void Dispatch(object sender, Level level, string text)
+        private void Dispatch(object? sender, Level level, string text)
         {
             Message m = new Message
             {
@@ -53,19 +53,19 @@ namespace CTC
             OnLogMessage?.Invoke(sender, m);
         }
 
-        public static void Debug(string message, object sender = null)
+        public static void Debug(string message, object? sender = null)
             => Instance.Dispatch(sender, Level.Debug, message);
 
-        public static void Notice(string message, object sender = null)
+        public static void Notice(string message, object? sender = null)
             => Instance.Dispatch(sender, Level.Notice, message);
 
-        public static void Warning(string message, object sender = null)
+        public static void Warning(string message, object? sender = null)
             => Instance.Dispatch(sender, Level.Warning, message);
 
-        public static void Error(string message, object sender = null)
+        public static void Error(string message, object? sender = null)
             => Instance.Dispatch(sender, Level.Error, message);
 
-        public static void Fatal(string message, object sender = null)
+        public static void Fatal(string message, object? sender = null)
             => Instance.Dispatch(sender, Level.Fatal, message);
     }
 }

@@ -17,18 +17,18 @@ namespace CTC
         /// <summary>
         /// The superview of this view (ie. the view above it in the view hierarchy).
         /// </summary>
-        public UIView Parent
+        public UIView? Parent
         {
             get { return _Parent; }
         }
-        private UIView _Parent;
+        private UIView? _Parent;
 
         public UIElementType ElementType;
         protected Boolean CropChildren = true;
         public Boolean Visible = true;
         public Boolean InteractionEnabled = true;
         public int ZOrder = 0;
-        public String Tag;
+        public string? Tag;
         public Boolean NeedsLayout = true;
         public Boolean ClipsSubviews = false;
 
@@ -198,7 +198,7 @@ namespace CTC
             return views;
         }
 
-        public virtual UIView GetSubviewWithTag(String SearchTag)
+        public virtual UIView? GetSubviewWithTag(String SearchTag)
         {
             foreach (UIView Subview in Subviews)
                 if (Subview.Tag == SearchTag)
@@ -283,7 +283,7 @@ namespace CTC
 
         public void RemoveFromSuperview()
         {
-            Parent.RemoveSubview(this);
+            Parent!.RemoveSubview(this);
         }
 
         public void BringSubviewToFront(UIView view)

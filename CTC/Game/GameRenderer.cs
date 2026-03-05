@@ -51,13 +51,13 @@ namespace CTC
                 Vector2.Zero, 0f, clr);
         }
 
-        public void DrawSprite(GameTime Time, ClientTile Tile, GameSprite Sprite, int SubType, int Frame, Vector2 Position, Color clr)
+        public void DrawSprite(GameTime Time, ClientTile? Tile, GameSprite? Sprite, int SubType, int Frame, Vector2 Position, Color clr)
         {
             Vector2 tmp = Position;
             DrawSprite(Time, Tile, Sprite, SubType, Frame, ref tmp, clr);
         }
 
-        public void DrawSprite(GameTime Time, ClientTile Tile, GameSprite Sprite, int SubType, int Frame, ref Vector2 Position, Color clr)
+        public void DrawSprite(GameTime Time, ClientTile? Tile, GameSprite? Sprite, int SubType, int Frame, ref Vector2 Position, Color clr)
         {
             if (Sprite == null)
                 return;
@@ -156,10 +156,13 @@ namespace CTC
             }
             else if (Creature.Outfit.LookType != 0)
             {
-                GameSprite Sprite = GameData.GetCreatureSprite(Creature.Outfit.LookType);
+                GameSprite? Sprite = GameData.GetCreatureSprite(Creature.Outfit.LookType);
 
-                Offset.X += Sprite.RenderOffset;
-                Offset.Y += Sprite.RenderOffset;
+                if (Sprite != null)
+                {
+                    Offset.X += Sprite.RenderOffset;
+                    Offset.Y += Sprite.RenderOffset;
+                }
                 if (Sprite != null)
                 {
                     for (int cx = 0; cx != Sprite.Width; ++cx)
@@ -209,7 +212,7 @@ namespace CTC
 
         public Color LifeColorForCreature(ClientCreature Creature)
         {
-            ColorGradient cg = UIContext.Skin.Gradient("Health");
+            ColorGradient? cg = UIContext.Skin.Gradient("Health");
             if (cg != null)
                 return cg.Sample(Creature.HealthPercent);
             return new Color(255, 255, 255, 255);
@@ -219,17 +222,17 @@ namespace CTC
         {
             if (Creature.Name != "")
             {
-                GameSprite Sprite = GameData.GetCreatureSprite(Creature.Outfit.LookType);
+                GameSprite? Sprite = GameData.GetCreatureSprite(Creature.Outfit.LookType);
                 Vector2 TextSize = Raylib.MeasureTextEx(UIContext.StandardFont, Creature.Name, UIContext.StandardFontSize, 1f);
                 Color LifeColor = LifeColorForCreature(Creature);
                 
                 // Put at the center of the sprite
-                Offset.X += Sprite.Width * 16;
-                Offset.Y -= Sprite.Height * 16;
+                Offset.X += (Sprite?.Width ?? 1) * 16;
+                Offset.Y -= (Sprite?.Height ?? 1) * 16;
                 
                 // Render offsets are negative
-                Offset.X += Sprite.RenderOffset;
-                Offset.Y += Sprite.RenderOffset;
+                Offset.X += Sprite?.RenderOffset ?? 0;
+                Offset.Y += Sprite?.RenderOffset ?? 0;
 
                 // Render the text
                 Vector2 TextOffset = Offset;
@@ -253,7 +256,7 @@ namespace CTC
             }
         }
 
-        public void DrawTile(GameTime Time, Vector2 Position, ClientTile Tile, TileAnimations Animations)
+        public void DrawTile(GameTime Time, Vector2 Position, ClientTile? Tile, TileAnimations? Animations)
         {
             if (Tile == null)
                 return;
@@ -294,7 +297,7 @@ namespace CTC
             }
         }
 
-        public void DrawTileForeground(GameTime Time, Vector2 Offset, ClientTile Tile, TileAnimations Animations)
+        public void DrawTileForeground(GameTime Time, Vector2 Offset, ClientTile? Tile, TileAnimations? Animations)
         {
             if (Tile == null)
                 return;
@@ -319,7 +322,7 @@ namespace CTC
             }
         }
 
-        public void DrawSceneForeground(Vector2 ScreenOffset, Vector2 Scale, GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations> PlayingAnimations = null)
+        public void DrawSceneForeground(Vector2 ScreenOffset, Vector2 Scale, GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations>? PlayingAnimations = null)
         {
             MapPosition Center = Viewport.ViewPosition;
 
@@ -345,12 +348,12 @@ namespace CTC
             {
                 for (int Y = Center.Y - 6; Y <= Center.Y + 6; ++Y)
                 {
-                    ClientTile Tile = Viewport.Map[new MapPosition(X, Y, Center.Z)];
+                    ClientTile? Tile = Viewport.Map[new MapPosition(X, Y, Center.Z)];
 
                     Vector2 DrawOffset = new Vector2(32 * X + TopLeft.X, 32 * Y + TopLeft.Y);
                     DrawOffset *= Scale;
 
-                    TileAnimations Animations = null;
+                    TileAnimations? Animations = null;
                     if (PlayingAnimations != null && Tile != null)
                         PlayingAnimations.TryGetValue(Tile.Position, out Animations);
                     DrawTileForeground(Time, ScreenOffset + DrawOffset, Tile, Animations);
@@ -358,7 +361,7 @@ namespace CTC
             }
         }
 
-        public void DrawScene(GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations> PlayingAnimations = null)
+        public void DrawScene(GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations>? PlayingAnimations = null)
         {
             MapPosition Center = Viewport.ViewPosition;
 
@@ -388,11 +391,11 @@ namespace CTC
                 {
                     for (int Y = Center.Y - 6; Y <= Center.Y + 7; ++Y)
                     {
-                        ClientTile Tile = Viewport.Map[new MapPosition(X, Y, Z)];
+                        ClientTile? Tile = Viewport.Map[new MapPosition(X, Y, Z)];
 
                         Vector2 pos = new Vector2(32 * X + TopLeft.X, 32 * Y + TopLeft.Y);
                         
-                        TileAnimations Animations = null;
+                        TileAnimations? Animations = null;
                         if (PlayingAnimations != null && Tile != null)
                             PlayingAnimations.TryGetValue(Tile.Position, out Animations);
                         DrawTile(Time, pos, Tile, Animations);

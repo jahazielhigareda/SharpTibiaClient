@@ -8,7 +8,7 @@ using Color = Raylib_cs.Color;
 
 namespace CTC
 {
-    public delegate void ViewportChangedEventHandler(ClientViewport NewViewport);
+    public delegate void ViewportChangedEventHandler(ClientViewport? NewViewport);
 
     public class GameDesktop : UIView, IDisposable
     {
@@ -30,11 +30,11 @@ namespace CTC
 
         List<ClientState> Clients = new List<ClientState>();
 
-        GameSidebar  Sidebar;
-        ChatPanel    Chat;
-        GameFrame    Frame;
+        GameSidebar  Sidebar   = null!;
+        ChatPanel    Chat      = null!;
+        GameFrame    Frame     = null!;
         // Phase 10: hotbar at the bottom of the game area.
-        HotbarPanel  Hotbar;
+        HotbarPanel  Hotbar    = null!;
 
         protected ClientState ActiveClient
         {
@@ -44,13 +44,13 @@ namespace CTC
             }
             set
             {
-                ActiveViewportChanged(value.Viewport);
+                ActiveViewportChanged?.Invoke(value.Viewport);
                 _ActiveClient = value;
             }
         }
-        protected ClientState _ActiveClient;
+        protected ClientState _ActiveClient = null!;
 
-        public ClientViewport ActiveViewport
+        public ClientViewport? ActiveViewport
         {
             get
             {
@@ -67,7 +67,7 @@ namespace CTC
 
         #region Event Slots
 
-        public event ViewportChangedEventHandler ActiveViewportChanged;
+        public event ViewportChangedEventHandler? ActiveViewportChanged;
 
         #endregion
 
@@ -87,12 +87,30 @@ namespace CTC
             Frame.AddClient(State);
         }
 
+        /// <summary>
+        /// Adds a <see cref="LoginPanel"/> as a floating overlay on the desktop.
+        /// </summary>
+        public void AddLoginPanel(LoginPanel panel)
+        {
+            panel.ZOrder = 100; // Float above game panels
+            AddSubview(panel);
+            NeedsLayout = true;
+        }
+
+        /// <summary>
+        /// Removes a previously added <see cref="LoginPanel"/> from the desktop.
+        /// </summary>
+        public void RemoveLoginPanel(LoginPanel panel)
+        {
+            panel.RemoveFromSuperview();
+        }
+
         #region Event Handlers
 
         /// <summary>
         /// The game window was resized
         /// </summary>
-        void OnResize(object o, EventArgs args)
+        void OnResize(object? o, EventArgs args)
         {
             System.Console.WriteLine("Game Window was resized!");
             if (UIContext.Window.ClientBounds.Height > 0 && UIContext.Window.ClientBounds.Width > 0)

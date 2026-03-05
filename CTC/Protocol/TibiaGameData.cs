@@ -247,7 +247,7 @@ namespace CTC
 		        for(int i = 0; i < sType.SpriteCount; ++i)
                 {
 			        UInt16 SpriteID = ReadU16(DatFile);
-                    GameImage img = GetImage(SpriteID);
+                    GameImage? img = GetImage(SpriteID);
 			        if(img == null)
                     {
                         img = new GameImage(this, SpriteID);
@@ -260,58 +260,58 @@ namespace CTC
 	        }
         }
 
-        public GameImage GetImage(int id)
+        public GameImage? GetImage(int id)
         {
-            GameImage Image;
+            GameImage? Image;
             if (Images.TryGetValue(id, out Image))
                 return Image;
             return null;
         }
 
-        public GameSprite GetItemSprite(int id)
+        public GameSprite? GetItemSprite(int id)
         {
             if (id > ItemCount)
                 return null;
-            GameSprite Sprite;
+            GameSprite? Sprite;
             if (Sprites.TryGetValue(id, out Sprite))
                 return Sprite;
             return null;
         }
 
-        public GameSprite GetCreatureSprite(int id)
+        public GameSprite? GetCreatureSprite(int id)
         {
             if (id > CreatureCount)
                 return null;
             id = id + ItemCount;
-            GameSprite Sprite;
+            GameSprite? Sprite;
             if (Sprites.TryGetValue(id, out Sprite))
                 return Sprite;
             return null;
         }
 
-        public GameSprite GetEffectSprite(int id)
+        public GameSprite? GetEffectSprite(int id)
         {
             if (id > EffectCount)
                 return null;
             id = id + ItemCount + CreatureCount;
-            GameSprite Sprite;
+            GameSprite? Sprite;
             if (Sprites.TryGetValue(id, out Sprite))
                 return Sprite;
             return null;
         }
 
-        public GameSprite GetDistanceEffectSprite(int id)
+        public GameSprite? GetDistanceEffectSprite(int id)
         {
             if (id > DistanceCount)
                 return null;
             id = id + ItemCount + CreatureCount + EffectCount;
-            GameSprite Sprite;
+            GameSprite? Sprite;
             if (Sprites.TryGetValue(id, out Sprite))
                 return Sprite;
             return null;
         }
 
-        public ItemType GetItemType(int id)
+        public ItemType? GetItemType(int id)
         {
             if (Items.ContainsKey(id))
                 return Items[id];

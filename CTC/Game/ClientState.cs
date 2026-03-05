@@ -23,8 +23,13 @@ namespace CTC
         public ClientState(PacketStream InStream)
         {
             this.InStream = InStream;
-            FileStream datFile = new FileStream("./Tibia.dat", FileMode.Open);
-            FileStream sprFile = new FileStream("./Tibia.spr", FileMode.Open);
+            // Phase 14: use AppContext.BaseDirectory so the paths resolve
+            // correctly for both `dotnet run` and self-contained publishes on
+            // any platform (Windows, Linux, macOS).
+            string datPath = Path.Combine(AppContext.BaseDirectory, "Tibia.dat");
+            string sprPath = Path.Combine(AppContext.BaseDirectory, "Tibia.spr");
+            FileStream datFile = new FileStream(datPath, FileMode.Open);
+            FileStream sprFile = new FileStream(sprPath, FileMode.Open);
             GameData = new TibiaGameData(datFile, sprFile);
             Protocol = new TibiaGameProtocol(GameData);
             Viewport = new ClientViewport(GameData, Protocol);
@@ -43,7 +48,7 @@ namespace CTC
             {
                 try
                 {
-                    NetworkMessage nmsg = InStream.Read(Time);
+                    NetworkMessage? nmsg = InStream.Read(Time);
                     if (nmsg == null)
                         return;
                     Protocol.parsePacket(nmsg);
@@ -63,7 +68,7 @@ namespace CTC
             TibiaMovieStream Movie = (TibiaMovieStream)InStream;
 
             while (Movie.Elapsed.TotalSeconds < Span.TotalSeconds)
-                Protocol.parsePacket(Movie.Read(null));
+                Protocol.parsePacket(Movie.Read(null)!);
         }
 
         public void Update(GameTime Time)
@@ -73,10 +78,13 @@ namespace CTC
 
         /// <summary>
         /// Phase 9: Releases GPU textures by disposing the owned TibiaGameData.
+        /// Also disposes the underlying PacketStream if it implements IDisposable
+        /// (e.g. <see cref="LivePacketStream"/> which owns a TCP connection).
         /// </summary>
         public void Dispose()
         {
             GameData?.Dispose();
+            (InStream as IDisposable)?.Dispose();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace CTC
 {
     public class InventoryPanel : UIFrame
     {
-        ClientViewport Viewport;
+        ClientViewport? Viewport;
 
         /// <summary>
         /// Need a reference to be able to unsubscribe to state change events.
@@ -38,7 +38,7 @@ namespace CTC
             ViewportChanged(Desktop.ActiveViewport);
         }
 
-        public void ViewportChanged(ClientViewport NewViewport)
+        public void ViewportChanged(ClientViewport? NewViewport)
         {
             Viewport = NewViewport;
             foreach (InventoryItemButton Button in ContentView.SubviewsOfType<InventoryItemButton>())

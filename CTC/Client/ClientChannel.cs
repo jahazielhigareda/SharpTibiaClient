@@ -9,8 +9,8 @@ namespace CTC
     {
         public MessageType Type;
         public DateTime Time;
-        public String Text;
-        public String Speaker;
+        public string Text    = "";
+        public string Speaker = "";
 
         public ClientMessage()
         {

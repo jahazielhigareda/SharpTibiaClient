@@ -16,7 +16,7 @@ namespace CTC
         private Vector2? DraggedFromPosition;
         public String Name;
 
-        private UIView _ContentView = null;
+        private UIView _ContentView = null!;
         public UIView ContentView
         {
             get
@@ -43,9 +43,9 @@ namespace CTC
 
         public delegate void FrameMovedEvent(UIFrame Frame);
 
-        public event FrameMovedEvent FrameStartedToMove;
-        public event FrameMovedEvent FrameMoved;
-        public event FrameMovedEvent FrameStoppedMoving;
+        public event FrameMovedEvent? FrameStartedToMove;
+        public event FrameMovedEvent? FrameMoved;
+        public event FrameMovedEvent? FrameStoppedMoving;
 
         #endregion
 
@@ -96,10 +96,10 @@ namespace CTC
             {
                 float dx = BeingDraggedFrom.Value.X - mouse.X;
                 float dy = BeingDraggedFrom.Value.Y - mouse.Y;
-                Bounds.X = (int)(DraggedFromPosition.Value.X - dx);
-                Bounds.Y = (int)(DraggedFromPosition.Value.Y - dy);
+                Bounds.X = (int)(DraggedFromPosition!.Value.X - dx);
+                Bounds.Y = (int)(DraggedFromPosition!.Value.Y - dy);
 
-                Rectangle ParentBounds = Parent.ClientBounds;
+                Rectangle ParentBounds = Parent!.ClientBounds;
                 if (Bounds.X < ParentBounds.Left)
                     Bounds.X = ParentBounds.Left;
                 if (Bounds.Y < ParentBounds.Top)
