@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -39,22 +40,22 @@ namespace CTC
             _Text = Text;
         }
 
-        protected override void DrawContent(SpriteBatch CurrentBatch)
+        protected override void DrawContent()
         {
             if (Text == "")
                 return;
 
             int RL = 0;
             if (TextAlignment == UITextAlignment.Center)
-                RL = (int)(Bounds.Width - UIContext.StandardFont.MeasureString(Text).X) / 2;
+                RL = (int)(Bounds.Width - Raylib.MeasureTextEx(UIContext.StandardFont, Text, UIContext.StandardFontSize, 1f).X) / 2;
             else if (TextAlignment == UITextAlignment.Right)
-                RL = (int)(Bounds.Width - UIContext.StandardFont.MeasureString(Text).X);
+                RL = (int)(Bounds.Width - Raylib.MeasureTextEx(UIContext.StandardFont, Text, UIContext.StandardFontSize, 1f).X);
 
-            CurrentBatch.DrawString(
+            Raylib.DrawTextEx(
                 UIContext.StandardFont,
                 _Text,
                 ScreenCoordinate(RL, 0),
-                TextColor
+                UIContext.StandardFontSize, 1f, TextColor
             );
         }
     }

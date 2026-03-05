@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -130,21 +130,19 @@ namespace CTC
             return true;
         }
 
-        protected override void DrawContent(SpriteBatch CurrentBatch)
+        protected override void DrawContent()
         {
             if (Label != null)
             {
-                Vector2 Size = UIContext.StandardFont.MeasureString(Label);
+                Vector2 Size = Raylib.MeasureTextEx(UIContext.StandardFont, Label, UIContext.StandardFontSize, 1f);
                 Vector2 Offset = new Vector2(
                     (int)((ClientBounds.Width - Size.X) / 2),
                     (int)((ClientBounds.Height - Size.Y) / 2)
                 );
 
-                CurrentBatch.DrawString(
+                Raylib.DrawTextEx(
                     UIContext.StandardFont, Label, ScreenCoordinate(Offset),
-                    Color.LightGray,
-                    0.0f, new Vector2(0.0f, 0.0f),
-                    1.0f, SpriteEffects.None, 0.5f
+                    UIContext.StandardFontSize, 1f, Color.LightGray
                 );
             }
         }

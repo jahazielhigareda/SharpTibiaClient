@@ -173,18 +173,18 @@ This roadmap describes the complete, phase-by-phase plan to:
 
 **Complexity: Low | Estimated effort: 1–2 hours**
 
-- [ ] Run `dotnet new sln -n SharpTibiaClient` to create a new SDK solution
-- [ ] Create `CTC/CTC.csproj` using SDK-style format targeting `net8.0`; set `<OutputType>Exe</OutputType>`, `<PlatformTarget>AnyCPU</PlatformTarget>`
-- [ ] Remove `CTCContent/CTCContent.contentproj` from solution (replaced in Phase 4)
-- [ ] Remove all XNA `<ProjectTypeGuid>` entries
-- [ ] Remove `<NoStdLib>`, `<NoConfig>`, `<XnaFrameworkVersion>`, `<XnaPlatform>` properties
-- [ ] Remove all COM interop `<Reference>` entries: `EnvDTE*`, `Microsoft.mshtml`, `Accessibility`
-- [ ] Remove WPF `<Reference>` entries: `PresentationCore`, `PresentationFramework`, `System.Xaml`, `WindowsBase`
-- [ ] Add `<Nullable>enable</Nullable>` and `<ImplicitUsings>enable</ImplicitUsings>`
+- [x] Run `dotnet new sln -n SharpTibiaClient` to create a new SDK solution
+- [x] Create `CTC/CTC.csproj` using SDK-style format targeting `net8.0`; set `<OutputType>Exe</OutputType>`, `<PlatformTarget>AnyCPU</PlatformTarget>`
+- [x] Remove `CTCContent/CTCContent.contentproj` from solution (replaced in Phase 4)
+- [x] Remove all XNA `<ProjectTypeGuid>` entries
+- [x] Remove `<NoStdLib>`, `<NoConfig>`, `<XnaFrameworkVersion>`, `<XnaPlatform>` properties
+- [x] Remove all COM interop `<Reference>` entries: `EnvDTE*`, `Microsoft.mshtml`, `Accessibility`
+- [x] Remove WPF `<Reference>` entries: `PresentationCore`, `PresentationFramework`, `System.Xaml`, `WindowsBase`
+- [x] Add `<Nullable>enable</Nullable>` and `<ImplicitUsings>enable</ImplicitUsings>`
 
 **Validation Checkpoint:**
-- [ ] `dotnet restore` completes without error
-- [ ] `dotnet build` produces errors only from missing XNA types (not from project format)
+- [x] `dotnet restore` completes without error
+- [x] `dotnet build` produces errors only from missing XNA types (not from project format)
 
 ---
 

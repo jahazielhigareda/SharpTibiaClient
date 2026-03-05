@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -72,30 +73,9 @@ namespace CTC
             {
                 UILabel Label = new UILabel(VIP.Name);
                 Label.Bounds.Width = ClientBounds.Width;
-                Label.TextColor = VIP.Online ? Color.LightGreen : Color.Red;
+                Label.TextColor = VIP.Online ? Color.Lime : Color.Red;
                 ContentView.AddSubview(Label);
             }
         }
-        
-        /*
-        protected override void DrawContent(SpriteBatch CurrentBatch)
-        {
-            Vector2 pos = new Vector2(0, 0);
-            foreach (ClientCreature vip in Viewport.VIPList.Values)
-            {
-                if (vip.Online == false)
-                    continue;
-
-                CurrentBatch.DrawString(
-                    UIContext.StandardFont, vip.Name, ScreenCoordinate(pos),
-                    (vip.Online ? Color.LightGreen : Color.Red),
-                    0.0f, new Vector2(0.0f, 0.0f),
-                    1.0f, SpriteEffects.None, 0.5f
-                );
-
-                pos.Y += 16;
-            }
-        }
-        */
     }
 }

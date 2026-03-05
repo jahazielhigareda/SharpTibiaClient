@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\mtanksl.OpenTibia.Common\mtanksl.OpenTibia.Common.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Network\mtanksl.OpenTibia.Network.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Data.InMemory\mtanksl.OpenTibia.Data.InMemory.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Game\mtanksl.OpenTibia.Game.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.GameData\mtanksl.OpenTibia.GameData.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Plugins\mtanksl.OpenTibia.Plugins.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

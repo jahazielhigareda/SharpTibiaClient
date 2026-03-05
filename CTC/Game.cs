@@ -1,181 +1,205 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
     /// <summary>
-    /// This is the main type for your game
+    /// Main game class. Phase 3: uses a Raylib-based window and game loop.
+    /// Phase 6: mouse/keyboard input read directly from Raylib each frame.
     /// </summary>
-    public class Game : Microsoft.Xna.Framework.Game
+    public class Game : IDisposable
     {
-        GraphicsDeviceManager Graphics;
+        private const int DefaultWidth  = 1280;
+        private const int DefaultHeight = 800;
 
-        GameDesktop Desktop;
-        MouseState LastMouseState;
+        private GameDesktop? Desktop;
 
-        public Game()
-        {
-            Graphics = new GraphicsDeviceManager(this);
-            
+        // Phase 6: previous frame mouse state, used to detect button transitions.
+        private MouseState _prevMouse = new MouseState(0, 0);
 
-            Graphics.PreparingDeviceSettings += PrepareDevice;
-            Graphics.PreferredBackBufferWidth = 1280;
-            Graphics.PreferredBackBufferHeight = 800;
-            Content.RootDirectory = "Content";
-        }
+        // ------------------------------------------------------------------ //
+        // Entry point                                                          //
+        // ------------------------------------------------------------------ //
 
         /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
+        /// Opens the Raylib window and runs the game loop until the window is closed.
         /// </summary>
-        protected override void Initialize()
+        public void Run()
         {
-            base.Initialize();
+            Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
+            Raylib.InitWindow(DefaultWidth, DefaultHeight, "SharpTibiaClient");
+            Raylib.SetTargetFPS(60);
 
-            // Setup the window
-            IsFixedTimeStep = false;
-            Graphics.SynchronizeWithVerticalRetrace = false;
-            //graphics.GraphicsDevice.PresentationParameters.PresentationInterval = PresentInterval.One;
-            //graphics.PreferWaitForVerticalTrace = false;
-            IsMouseVisible = true;
-            Window.AllowUserResizing = true;
+            Initialize();
+            LoadContent();
 
-            Graphics.ApplyChanges();
+            while (!Raylib.WindowShouldClose())
+            {
+                GameTime time = new GameTime
+                {
+                    ElapsedGameTime = TimeSpan.FromSeconds(Raylib.GetFrameTime()),
+                    TotalGameTime   = TimeSpan.FromSeconds(Raylib.GetTime()),
+                };
+
+                // Keep UIContext window dimensions in sync with the live Raylib window.
+                UIContext.SyncWindowSize(Raylib.GetScreenWidth(), Raylib.GetScreenHeight());
+
+                if (Raylib.IsWindowResized())
+                    UIContext.Window.RaiseClientSizeChanged();
+
+                // Phase 6: read Raylib input and dispatch to the UI hierarchy.
+                ProcessInput();
+
+                Update(time);
+
+                Raylib.BeginDrawing();
+                Raylib.ClearBackground(Color.Black);
+                Draw(time);
+                Raylib.EndDrawing();
+            }
+
+            UnloadContent();
+            Raylib.CloseWindow();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-        protected override void LoadContent()
+        // ------------------------------------------------------------------ //
+        // Lifecycle methods                                                    //
+        // ------------------------------------------------------------------ //
+
+        private void Initialize()
         {
-            // Initialize the context
-            UIContext.Initialize(Window, Graphics, Content);
+            UIContext.Initialize(new GameWindow());
+        }
+
+        private void LoadContent()
+        {
             UIContext.Load();
 
-            // Create the game frame
             Desktop = new GameDesktop();
             Desktop.Load();
             Desktop.CreatePanels();
-
-            // Initial layout of all views
             Desktop.LayoutSubviews();
             Desktop.NeedsLayout = true;
 
-            ///////////////////////////////////////////////////////////////////
-            // For debugging read a TMV file as input
+            try
+            {
+                LoadMovieState();
+            }
+            catch (Exception ex)
+            {
+                Log.Warning($"Movie state not loaded (files may be missing): {ex.Message}");
+            }
+        }
 
+        /// <summary>
+        /// Loads the debug TMV movie replay. Extracted so try/catch doesn't hide
+        /// bugs in the rest of LoadContent.
+        /// </summary>
+        private void LoadMovieState()
+        {
             FileInfo file = new FileInfo("./Test.tmv");
-            Stream virtualStream = null;
-
+            Stream virtualStream;
             FileStream fileStream = file.OpenRead();
             if (file.Extension == ".tmv")
-                virtualStream = new System.IO.Compression.GZipStream(fileStream, System.IO.Compression.CompressionMode.Decompress);
+                virtualStream = new System.IO.Compression.GZipStream(
+                    fileStream, System.IO.Compression.CompressionMode.Decompress);
             else
                 virtualStream = fileStream;
 
-            // Add the initial state
             TibiaMovieStream MovieStream = new TibiaMovieStream(virtualStream, file.Name);
             ClientState State = new ClientState(MovieStream);
 
             MovieStream.PlaybackSpeed = 50;
             State.ForwardTo(new TimeSpan(0, 30, 0));
 
-            // If fast-forwarded, client tab immediately,
-            // otherwise delay until we receive the login packet.
             if (State.Viewport.Player == null)
             {
                 State.Viewport.Login += delegate(ClientViewport Viewport)
                 {
-                    Desktop.AddClient(State);
+                    Desktop?.AddClient(State);
                 };
             }
             else
             {
-                Desktop.AddClient(State);
+                Desktop?.AddClient(State);
             }
 
             State.Update(new GameTime());
-            /*
-            while (MS.Elapsed.TotalMinutes < 0 || MS.Elapsed.Seconds < 0)
-                Protocol.parsePacket(InStream.Read());
-             */
+        }
+
+        private void UnloadContent()
+        {
+            // Phase 9: dispose the desktop, which disposes all ClientState objects,
+            // which dispose their TibiaGameData, releasing all GPU textures.
+            Desktop?.Dispose();
+            Desktop = null;
+        }
+
+        // ------------------------------------------------------------------ //
+        // Phase 6 — Input                                                     //
+        // ------------------------------------------------------------------ //
+
+        /// <summary>
+        /// Phase 6: reads Raylib mouse/keyboard state and dispatches UI events.
+        /// Called once per frame before Update().
+        /// </summary>
+        private void ProcessInput()
+        {
+            MouseState curr = BuildMouseState();
+
+            // Always propagate mouse position so drag tracking works.
+            Desktop?.MouseMove(curr);
+
+            // Dispatch on left-button state transitions (both press and release).
+            if (curr.LeftButton != _prevMouse.LeftButton)
+                Desktop?.MouseLeftClick(curr);
+
+            // Scroll wheel: dispatch to the UI hierarchy.
+            float wheel = Raylib.GetMouseWheelMove();
+            if (wheel != 0f)
+                Desktop?.MouseScroll(curr, (int)wheel);
+
+            _prevMouse = curr;
         }
 
         /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
+        /// Phase 6: builds a MouseState by querying Raylib for the current
+        /// mouse position and button states.
         /// </summary>
-        protected override void UnloadContent()
+        private static MouseState BuildMouseState()
         {
-            // TODO: Unload any non ContentManager content here
+            return new MouseState(
+                Raylib.GetMouseX(),
+                Raylib.GetMouseY(),
+                Raylib.IsMouseButtonDown(MouseButton.Left) ? ButtonState.Pressed : ButtonState.Released,
+                Raylib.IsMouseButtonDown(MouseButton.Right) ? ButtonState.Pressed : ButtonState.Released,
+                Raylib.IsMouseButtonDown(MouseButton.Middle) ? ButtonState.Pressed : ButtonState.Released
+            );
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
+        // ------------------------------------------------------------------ //
+        // Update / Draw                                                        //
+        // ------------------------------------------------------------------ //
+
+        private void Update(GameTime time)
         {
-            MouseState mouse = Mouse.GetState();
-
-            // Do input handling
-
-            // First check left mouse button
-            if (LastMouseState != null)
-            {
-                if (LastMouseState.LeftButton != mouse.LeftButton)
-                    Desktop.MouseLeftClick(mouse);
-            }
-
-            // Send the mouse moved event
-            if (LastMouseState.X != mouse.X || LastMouseState.Y != mouse.Y)
-                Desktop.MouseMove(mouse);
-
-            // Save the state for next frame so we can see what changed
-            LastMouseState = mouse;
-
-            // Update the game state
-            Desktop.Update(gameTime);
-
-            base.Update(gameTime);
+            Desktop?.Update(time);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
+        private void Draw(GameTime time)
         {
-            GraphicsDevice.Clear(Color.Black);
-
-            try
-            {
-                Desktop.Draw(null, Window.ClientBounds);
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            base.Draw(gameTime);
+            Desktop?.Draw(UIContext.Window.ClientBounds);
         }
 
-        protected void PrepareDevice(object sender, PreparingDeviceSettingsEventArgs e)
+        public void Dispose()
         {
-            e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+            // Phase 9: ensure GPU textures are released if Run() was not called
+            // (or if an exception prevented UnloadContent from running).
+            Desktop?.Dispose();
+            Desktop = null;
         }
     }
 }

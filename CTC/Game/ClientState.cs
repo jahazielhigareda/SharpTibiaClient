@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Microsoft.Xna.Framework;
 
 namespace CTC
 {
@@ -11,8 +10,10 @@ namespace CTC
     /// Holds all game data information for a single connection to a server
     /// or possibly a playing movie, either way this is usually passed to
     /// GameFrame.AddClient in order to create a new window displaying it.
+    /// Phase 9: implements IDisposable to release the owned TibiaGameData
+    /// (which in turn releases all GPU textures).
     /// </summary>
-    public class ClientState
+    public class ClientState : IDisposable
     {
         public readonly ClientViewport Viewport;
         public readonly TibiaGameData GameData;
@@ -68,6 +69,14 @@ namespace CTC
         public void Update(GameTime Time)
         {
             ReadPackets(Time);
+        }
+
+        /// <summary>
+        /// Phase 9: Releases GPU textures by disposing the owned TibiaGameData.
+        /// </summary>
+        public void Dispose()
+        {
+            GameData?.Dispose();
         }
     }
 }

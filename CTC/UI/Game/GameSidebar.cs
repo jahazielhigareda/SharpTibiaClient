@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -32,6 +32,10 @@ namespace CTC
         /// The panel that displays the player's current inventory
         /// </summary>
         InventoryPanel InventoryView;
+
+        // Phase 10: new panels wired to the Battle and Map toggle buttons.
+        BattlePanel BattleView;
+        MinimapPanel MapView;
 
         /// <summary>
         /// How many columns are in this sidebar
@@ -62,6 +66,10 @@ namespace CTC
         protected void ViewportChanged(ClientViewport Viewport)
         {
             this.Viewport = Viewport;
+
+            // Phase 10: keep the new panels in sync with the active viewport.
+            BattleView?.SetViewport(Viewport);
+            MapView?.SetViewport(Viewport);
         }
 
         public void AddWindow(UIFrame Window)
@@ -182,6 +190,20 @@ namespace CTC
 
             UIToggleButton BattleToggle = new UIToggleButton("Battle");
             BattleToggle.Bounds = ButtonSize;
+            BattleToggle.ButtonToggled += delegate(UIToggleButton Button, MouseState mouse)
+            {
+                if (Button.On && BattleView == null)
+                {
+                    BattleView = new BattlePanel();
+                    BattleView.SetViewport(Desktop.ActiveViewport);
+                    AddWindow(BattleView);
+                }
+                else if (!Button.On && BattleView != null)
+                {
+                    BattleView.RemoveFromSuperview();
+                    BattleView = null;
+                }
+            };
             MenuView.AddSubview(BattleToggle);
 
             UIToggleButton VIPToggle = new UIToggleButton("VIP");
@@ -201,8 +223,22 @@ namespace CTC
             };
             MenuView.AddSubview(VIPToggle);
 
-            UIButton MapToggle = new UIButton("Map");
+            UIToggleButton MapToggle = new UIToggleButton("Map");
             MapToggle.Bounds = ButtonSize;
+            MapToggle.ButtonToggled += delegate(UIToggleButton Button, MouseState mouse)
+            {
+                if (Button.On && MapView == null)
+                {
+                    MapView = new MinimapPanel();
+                    MapView.SetViewport(Desktop.ActiveViewport);
+                    AddWindow(MapView);
+                }
+                else if (!Button.On && MapView != null)
+                {
+                    MapView.RemoveFromSuperview();
+                    MapView = null;
+                }
+            };
             MenuView.AddSubview(MapToggle);
 
             UIButton MenuToggle = new UIButton("Menu");

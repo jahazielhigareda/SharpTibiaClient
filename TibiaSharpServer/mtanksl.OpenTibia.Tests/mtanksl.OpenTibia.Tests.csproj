@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mtanksl.OpenTibia.Security\mtanksl.OpenTibia.Security.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Data.Common\mtanksl.OpenTibia.Data.Common.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Data.InMemory\mtanksl.OpenTibia.Data.InMemory.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Common\mtanksl.OpenTibia.Common.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Game.Common\mtanksl.OpenTibia.Game.Common.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Plugins\mtanksl.OpenTibia.Plugins.csproj" />
+    <ProjectReference Include="..\mtanksl.OpenTibia.Game\mtanksl.OpenTibia.Game.csproj" />
+  </ItemGroup>
+
+</Project>

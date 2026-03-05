@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -23,44 +24,40 @@ namespace CTC
     class GameRenderer
     {
         TibiaGameData GameData;
-        GraphicsDevice Device;
 
         public GameRenderer(TibiaGameData GameData)
         {
-            this.Device = UIContext.Graphics.GraphicsDevice;
             this.GameData = GameData;
         }
 
         #region Drawing Code
 
         public Color MakeColor(int id)
-        {	    
-            Color c = new Color();
-            c.B = (byte)((id % 6) / 5f * 255);
-            c.G = (byte)(((id / 6) % 6) / 5f * 255);
-            c.R = (byte)((id / 36f) / 6f * 255);
-            return c;
-        }
-
-        private void DrawImage(SpriteBatch Batch, GameImage Image, Rectangle dest, Color clr)
         {
-            if (Image.Texture == null)
-            {
-                Texture2D Texture = new Texture2D(Device, 32, 32, false, SurfaceFormat.Color);
-                Texture.SetData<Byte>(Image.LoadRGBA());
-                Image.Texture = Texture;
-            }
-
-            Batch.Draw(Image.Texture, dest, clr);
+            int b = (int)((id % 6) / 5f * 255);
+            int g = (int)(((id / 6) % 6) / 5f * 255);
+            int r = (int)((id / 36f) / 6f * 255);
+            return new Color(r, g, b, 255);
         }
 
-        public void DrawSprite(SpriteBatch Batch, GameTime Time, ClientTile Tile, GameSprite Sprite, int SubType, int Frame, Vector2 Position, Color clr)
+        /// <summary>Phase 5: draw a 32×32 game sprite image into dest using Raylib.</summary>
+        private void DrawImage(GameImage Image, Rectangle dest, Color clr)
+        {
+            Raylib_cs.Texture2D tex = Image.GetTexture();
+            Raylib.DrawTexturePro(
+                tex,
+                new Raylib_cs.Rectangle(0, 0, 32, 32),
+                dest,
+                Vector2.Zero, 0f, clr);
+        }
+
+        public void DrawSprite(GameTime Time, ClientTile Tile, GameSprite Sprite, int SubType, int Frame, Vector2 Position, Color clr)
         {
             Vector2 tmp = Position;
-            DrawSprite(Batch, Time, Tile, Sprite, SubType, Frame, ref tmp, clr);
+            DrawSprite(Time, Tile, Sprite, SubType, Frame, ref tmp, clr);
         }
 
-        public void DrawSprite(SpriteBatch Batch, GameTime Time, ClientTile Tile, GameSprite Sprite, int SubType, int Frame, ref Vector2 Position, Color clr)
+        public void DrawSprite(GameTime Time, ClientTile Tile, GameSprite Sprite, int SubType, int Frame, ref Vector2 Position, Color clr)
         {
             if (Sprite == null)
                 return;
@@ -75,23 +72,7 @@ namespace CTC
                 zdiv = mPos.Z % Sprite.ZDiv;
             }
 
-            /*
-            if (Sprite.IsHangable)
-            {
-                if (Tile->hasProperty(ISVERTICAL))
-                {
-                    xdiv = 2;
-                }
-                else if (Tile->hasProperty(ISHORIZONTAL))
-                {
-                    xdiv = 1;
-                }
-                else
-                {
-                    xdiv = -0;
-                }
-            }
-            else */ if (Sprite.IsStackable)
+            if (Sprite.IsStackable)
             {
                 if (SubType <= 1)
                     SubType = 0;
@@ -135,7 +116,7 @@ namespace CTC
                         );
 
                         Rectangle rect = new Rectangle((int)Offset.X - 32 * cx, (int)Offset.Y - 32 * cy, 32, 32);
-                        DrawImage(Batch, Image, rect, clr);
+                        DrawImage(Image, rect, clr);
                     }
                 }
             }
@@ -147,31 +128,31 @@ namespace CTC
             }
         }
 
-        public void DrawInventoryItem(SpriteBatch Batch, ClientItem Item, Rectangle rect)
+        public void DrawInventoryItem(ClientItem Item, Rectangle rect)
         {
             if (Item.Sprite == null)
                 return;
 
-            DrawSprite(Batch, UIContext.GameTime, null, Item.Sprite, Item.Subtype, 0, new Vector2(rect.X, rect.Y), Color.White);
+            DrawSprite(UIContext.GameTime, null, Item.Sprite, Item.Subtype, 0, new Vector2(rect.X, rect.Y), Color.White);
 
             if (Item.Type.IsStackable)
             {
                 String count = Item.Subtype.ToString();
-                Vector2 textSize = UIContext.StandardFont.MeasureString(count);
-                DrawBoldedText(Batch, count, new Vector2(rect.X + 32 - textSize.X - 1, rect.Y + 32 - textSize.Y + 1), false, Color.LightGray);
+                Vector2 textSize = Raylib.MeasureTextEx(UIContext.StandardFont, count, UIContext.StandardFontSize, 1f);
+                DrawBoldedText(count, new Vector2(rect.X + 32 - textSize.X - 1, rect.Y + 32 - textSize.Y + 1), false, Color.LightGray);
             }
         }
 
-        public void DrawInventorySlot(SpriteBatch Batch, Rectangle rect)
+        public void DrawInventorySlot(Rectangle rect)
         {
-            UIContext.Skin.DrawBox(Batch, UIElementType.InventorySlot, rect);
+            UIContext.Skin.DrawBox(UIElementType.InventorySlot, rect);
         }
 
-        public void DrawCreature(SpriteBatch Batch, GameTime Time, ClientCreature Creature, Vector2 Offset, Color clr)
+        public void DrawCreature(GameTime Time, ClientCreature Creature, Vector2 Offset, Color clr)
         {
             if (Creature.Outfit.LookItem != 0)
             {
-                DrawSprite(Batch, Time, null, GameData.GetItemSprite(Creature.Outfit.LookItem), 1, -1, Offset, clr);
+                DrawSprite(Time, null, GameData.GetItemSprite(Creature.Outfit.LookItem), 1, -1, Offset, clr);
             }
             else if (Creature.Outfit.LookType != 0)
             {
@@ -192,40 +173,38 @@ namespace CTC
                             );
 
                             Rectangle rect = new Rectangle((int)Offset.X - 32 * cx, (int)Offset.Y - 32 * cy, 32, 32);
-                            DrawImage(Batch, Image, rect, clr);
+                            DrawImage(Image, rect, clr);
                         }
                     }
                 }
             }
         }
 
-        public void DrawText(SpriteBatch Batch, String Text, Vector2 Offset, Color Color)
+        public void DrawText(String Text, Vector2 Offset, Color Color)
         {
             Offset.X = (int)Offset.X;
             Offset.Y = (int)Offset.Y;
 
-            Batch.DrawString(
+            Raylib.DrawTextEx(
                 UIContext.StandardFont, Text, Offset,
-                Color, 0.0f, new Vector2(0.0f, 0.0f),
-                1.0f, SpriteEffects.None, 0.5f
-           );
+                UIContext.StandardFontSize, 1f, Color);
         }
 
-        public void DrawBoldedText(SpriteBatch Batch, String Text, Vector2 Offset, Boolean Centered, Color Primary)
+        public void DrawBoldedText(String Text, Vector2 Offset, Boolean Centered, Color Primary)
         {
             Offset.X = (int)Offset.X;
             Offset.Y = (int)Offset.Y;
 
             if (Centered)
             {
-                Vector2 TextSize = UIContext.StandardFont.MeasureString(Text);
+                Vector2 TextSize = Raylib.MeasureTextEx(UIContext.StandardFont, Text, UIContext.StandardFontSize, 1f);
                 Offset.X -= (int)(TextSize.X / 2);
             }
-            DrawText(Batch, Text, new Vector2(Offset.X + 1, Offset.Y), Color.Black);
-            DrawText(Batch, Text, new Vector2(Offset.X - 1, Offset.Y), Color.Black);
-            DrawText(Batch, Text, new Vector2(Offset.X, Offset.Y + 1), Color.Black);
-            DrawText(Batch, Text, new Vector2(Offset.X, Offset.Y - 1), Color.Black);
-            DrawText(Batch, Text, new Vector2(Offset.X, Offset.Y), Primary);
+            DrawText(Text, new Vector2(Offset.X + 1, Offset.Y), Color.Black);
+            DrawText(Text, new Vector2(Offset.X - 1, Offset.Y), Color.Black);
+            DrawText(Text, new Vector2(Offset.X, Offset.Y + 1), Color.Black);
+            DrawText(Text, new Vector2(Offset.X, Offset.Y - 1), Color.Black);
+            DrawText(Text, new Vector2(Offset.X, Offset.Y), Primary);
         }
 
         public Color LifeColorForCreature(ClientCreature Creature)
@@ -233,15 +212,15 @@ namespace CTC
             ColorGradient cg = UIContext.Skin.Gradient("Health");
             if (cg != null)
                 return cg.Sample(Creature.HealthPercent);
-            return new Color(255, 255, 255);
+            return new Color(255, 255, 255, 255);
         }
 
-        public void DrawCreatureBars(SpriteBatch Batch, ClientCreature Creature, Vector2 Offset)
+        public void DrawCreatureBars(ClientCreature Creature, Vector2 Offset)
         {
             if (Creature.Name != "")
             {
                 GameSprite Sprite = GameData.GetCreatureSprite(Creature.Outfit.LookType);
-                Vector2 TextSize = UIContext.StandardFont.MeasureString(Creature.Name);
+                Vector2 TextSize = Raylib.MeasureTextEx(UIContext.StandardFont, Creature.Name, UIContext.StandardFontSize, 1f);
                 Color LifeColor = LifeColorForCreature(Creature);
                 
                 // Put at the center of the sprite
@@ -257,7 +236,7 @@ namespace CTC
                 // Move it above the health bar
                 TextOffset.X = (int)(TextOffset.X - TextSize.X / 2);
                 TextOffset.Y -= 16;
-                DrawBoldedText(Batch, Creature.Name, TextOffset, false, LifeColor);
+                DrawBoldedText(Creature.Name, TextOffset, false, LifeColor);
 
                 // 
                 Rectangle BlackBar = new Rectangle(
@@ -265,32 +244,32 @@ namespace CTC
                     (int)Offset.Y,
                     28, 4
                 );
-                UIContext.Skin.DrawBorderedRectangle(Batch, BlackBar, Color.Black);
+                UIContext.Skin.DrawBorderedRectangle(BlackBar, Color.Black);
 
                 Rectangle InsideBar = BlackBar.Subtract(new Margin(1));
                 if (Creature.MaxHealth > 0)
                     InsideBar.Width = InsideBar.Width * Creature.Health / Creature.MaxHealth;
-                UIContext.Skin.DrawBorderedRectangle(Batch, InsideBar, LifeColor);
+                UIContext.Skin.DrawBorderedRectangle(InsideBar, LifeColor);
             }
         }
 
-        public void DrawTile(SpriteBatch Batch, GameTime Time, Vector2 Position, ClientTile Tile, TileAnimations Animations)
+        public void DrawTile(GameTime Time, Vector2 Position, ClientTile Tile, TileAnimations Animations)
         {
             if (Tile == null)
                 return;
 
             // Draw ground
             if (Tile.Ground != null)
-                DrawSprite(Batch, Time, Tile, Tile.Ground.Sprite, Tile.Ground.Subtype, -1, ref Position, Color.White);
+                DrawSprite(Time, Tile, Tile.Ground.Sprite, Tile.Ground.Subtype, -1, ref Position, Color.White);
 
             foreach (ClientThing Thing in Tile.ObjectsByDrawOrder)
             {
                 if (Thing is ClientCreature)
-                    DrawCreature(Batch, Time, (ClientCreature)Thing, Position, Color.White);
+                    DrawCreature(Time, (ClientCreature)Thing, Position, Color.White);
                 else
                 {
                     ClientItem Item = (ClientItem)Thing;
-                    DrawSprite(Batch, Time, Tile, Item.Sprite, Item.Subtype, -1, ref Position, Color.White);
+                    DrawSprite(Time, Tile, Item.Sprite, Item.Subtype, -1, ref Position, Color.White);
                 }
             }
 
@@ -303,19 +282,19 @@ namespace CTC
                         if (Effect is MagicEffect)
                         {
                             MagicEffect Magic = (MagicEffect)Effect;
-                            DrawSprite(Batch, Time, Tile, Magic.Sprite, -1, Magic.Frame, Position, Color.White);
+                            DrawSprite(Time, Tile, Magic.Sprite, -1, Magic.Frame, Position, Color.White);
                         }
                         else if (Effect is DistanceEffect)
                         {
                             DistanceEffect Distance = (DistanceEffect)Effect;
-                            DrawSprite(Batch, Time, Tile, Distance.Sprite, Distance.Frame, 0, Position + Distance.Offset, Color.White);
+                            DrawSprite(Time, Tile, Distance.Sprite, Distance.Frame, 0, Position + Distance.Offset, Color.White);
                         }
                     }
                 }
             }
         }
 
-        public void DrawTileForeground(SpriteBatch Batch, GameTime Time, Vector2 Offset, ClientTile Tile, TileAnimations Animations)
+        public void DrawTileForeground(GameTime Time, Vector2 Offset, ClientTile Tile, TileAnimations Animations)
         {
             if (Tile == null)
                 return;
@@ -323,7 +302,7 @@ namespace CTC
             foreach (ClientThing Thing in Tile.Objects)
             {
                 if (Thing is ClientCreature)
-                    DrawCreatureBars(Batch, (ClientCreature)Thing, Offset);
+                    DrawCreatureBars((ClientCreature)Thing, Offset);
             }
 
             if (Animations != null)
@@ -334,18 +313,15 @@ namespace CTC
                     {
                         AnimatedText Text = (AnimatedText)Effect;
                         Vector2 DrawOffset = Offset + Text.Offset;
-                        // DrawOffset.X += 16;
-                        // DrawOffset.Y += 26;
-                        DrawBoldedText(Batch, Text.Text, DrawOffset, true, MakeColor(Text.Color));
+                        DrawBoldedText(Text.Text, DrawOffset, true, MakeColor(Text.Color));
                     }
                 }
             }
         }
 
-        public void DrawSceneForeground(SpriteBatch Batch, Vector2 ScreenOffset, Vector2 Scale, GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations> PlayingAnimations = null)
+        public void DrawSceneForeground(Vector2 ScreenOffset, Vector2 Scale, GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations> PlayingAnimations = null)
         {
             MapPosition Center = Viewport.ViewPosition;
-
 
             Vector2 TopLeft = new Vector2(
                 -(Center.X - 7) * 32,
@@ -377,12 +353,12 @@ namespace CTC
                     TileAnimations Animations = null;
                     if (PlayingAnimations != null && Tile != null)
                         PlayingAnimations.TryGetValue(Tile.Position, out Animations);
-                    DrawTileForeground(Batch, Time, ScreenOffset + DrawOffset, Tile, Animations);
+                    DrawTileForeground(Time, ScreenOffset + DrawOffset, Tile, Animations);
                 }
             }
         }
 
-        public void DrawScene(SpriteBatch Batch, GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations> PlayingAnimations = null)
+        public void DrawScene(GameTime Time, ClientViewport Viewport, Dictionary<MapPosition, TileAnimations> PlayingAnimations = null)
         {
             MapPosition Center = Viewport.ViewPosition;
 
@@ -406,7 +382,6 @@ namespace CTC
                 -(Center.Y - 5) * 32
             );
 
-
             for (int Z = StartZ; Z >= EndZ; --Z)
             {
                 for (int X = Center.X - 8; X <= Center.X + 9; ++X)
@@ -420,7 +395,7 @@ namespace CTC
                         TileAnimations Animations = null;
                         if (PlayingAnimations != null && Tile != null)
                             PlayingAnimations.TryGetValue(Tile.Position, out Animations);
-                        DrawTile(Batch, Time, pos, Tile, Animations);
+                        DrawTile(Time, pos, Tile, Animations);
                     }
                 }
                 TopLeft -= new Vector2(32, 32);

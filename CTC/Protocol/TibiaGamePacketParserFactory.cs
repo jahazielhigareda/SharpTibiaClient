@@ -962,8 +962,8 @@ namespace CTC
             Creature.Health = nmsg.ReadByte();
             Creature.Direction = (Direction)nmsg.ReadByte();
 
-            // TODO: This is U16 for later versions
-            Creature.Outfit.LookType = (int)nmsg.ReadByte();
+            // Phase 8: LookType is U16 in 8.6 (was byte in 7.4).
+            Creature.Outfit.LookType = (int)nmsg.ReadU16();
             if (Creature.Outfit.LookType == 0)
             {
                 // looktypeEx
@@ -975,6 +975,8 @@ namespace CTC
                 Creature.Outfit.LookBody = nmsg.ReadByte();
                 Creature.Outfit.LookLegs = nmsg.ReadByte();
                 Creature.Outfit.LookFeet = nmsg.ReadByte();
+                // Phase 8: Addons byte — present in 8.6, absent in 7.4.
+                Creature.Outfit.Addons   = nmsg.ReadByte();
             }
 
             Creature.Light.Level = nmsg.ReadByte();

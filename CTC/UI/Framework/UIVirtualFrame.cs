@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -99,17 +100,22 @@ namespace CTC
             }
         }
 
-        protected override void DrawBackground(SpriteBatch CurrentBatch)
+        protected override void DrawBackground()
         {
             // do nothing
         }
 
-        /*
-        protected override void DrawBackgroundChildren(SpriteBatch CurrentBatch, Rectangle BoundingBox)
+        /// <summary>
+        /// Phase 6: scroll-wheel moves the scrollbar when the mouse is over this frame.
+        /// Negative delta = scroll down (content moves up); positive = scroll up.
+        /// The ScrollbarPosition setter already clamps the value to [0, ScrollbarLength].
+        /// </summary>
+        public override bool MouseScroll(MouseState mouse, int delta)
         {
-            base.DrawBackgroundChildren(CurrentBatch,
-                new Rectangle(0, VirtualBounds.Y, Bounds.Width, Bounds.Height));
+            // Scroll step: roughly one "row" per wheel notch.
+            const int StepPerNotch = 20;
+            Scrollbar.ScrollbarPosition -= delta * StepPerNotch;
+            return true;
         }
-         */
     }
 }

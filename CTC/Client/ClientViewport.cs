@@ -6,6 +6,16 @@ using System.Text;
 namespace CTC
 {
     /// <summary>
+    /// Phase 8: A single entry in the in-game quest log, as reported by the server.
+    /// </summary>
+    public class ClientQuestEntry
+    {
+        public ushort Id;
+        public string Name      = "";
+        public bool   Completed;
+    }
+
+    /// <summary>
     /// Entire state of the client in memory, including map, creatures, skills etc.
     /// </summary>
     public class ClientViewport
@@ -62,6 +72,22 @@ namespace CTC
         /// </summary>
         public ClientChannel DefaultChannel;
 
+        // Phase 8: Premium account state (reported in the character list packet).
+        public bool   IsPremium    = false;
+        public ushort PremiumDays  = 0;
+
+        // Phase 8: Quest log populated by QuestLogList / QuestLogDetail packets (0xCA/0xCB).
+        public System.Collections.Generic.List<ClientQuestEntry> QuestLog
+            = new System.Collections.Generic.List<ClientQuestEntry>();
+
+        // Phase 10: NPC shop offer list — populated when the server opens the shop window.
+        // Cleared when the shop window is closed.
+        public System.Collections.Generic.List<ClientShopOffer> ShopOffers
+            = new System.Collections.Generic.List<ClientShopOffer>();
+
+        // Phase 10: Player gold balance sent alongside the shop window (used for affordability checks).
+        public int ShopPlayerMoney = 0;
+
         #endregion
 
         #region Events
@@ -69,6 +95,8 @@ namespace CTC
         public delegate void LoginEvent(ClientViewport Viewport);
         public delegate void ContainerEvent(ClientViewport Viewport, ClientContainer Container);
         public delegate void VIPEvent(ClientViewport Viewport, ClientCreature Creature);
+        // Phase 10: shop window events.
+        public delegate void ShopEvent(ClientViewport Viewport);
 
         /// <summary>
         /// 
@@ -99,6 +127,10 @@ namespace CTC
         /// Fired when a VIP is added, logs in or logs out.
         /// </summary>
         public event VIPEvent VIPStatusChanged;
+
+        // Phase 10: fired when the server opens or closes the NPC shop window.
+        public event ShopEvent? ShopOpened;
+        public event ShopEvent? ShopClosed;
 
         #endregion
 
@@ -543,5 +575,27 @@ namespace CTC
 
         #endregion
 
+        // -------------------------------------------------------------------------
+        // Phase 10: shop helpers called by the packet parser
+        // -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Opens the NPC shop window with the supplied offer list and player's gold.
+        /// Fires the <see cref="ShopOpened"/> event so the UI can show the panel.
+        /// </summary>
+        public void OpenShop(System.Collections.Generic.List<ClientShopOffer> offers, int playerMoney)
+        {
+            ShopOffers     = offers;
+            ShopPlayerMoney = playerMoney;
+            ShopOpened?.Invoke(this);
+        }
+
+        /// <summary>Closes the NPC shop window and fires <see cref="ShopClosed"/>.</summary>
+        public void CloseShop()
+        {
+            ShopOffers.Clear();
+            ShopPlayerMoney = 0;
+            ShopClosed?.Invoke(this);
+        }
     }
 }

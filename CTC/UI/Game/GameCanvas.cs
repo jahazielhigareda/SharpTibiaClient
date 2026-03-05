@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System.Numerics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
@@ -24,7 +25,9 @@ namespace CTC
         private GameRenderer Renderer;
 
         private double LastCleanup = 0;
-        private RenderTarget2D Backbuffer;
+
+        // Phase 5: Raylib off-screen render texture (replaces RenderTarget2D).
+        private RenderTexture2D Backbuffer;
 
         private Dictionary<MapPosition, TileAnimations> PlayingAnimations = new Dictionary<MapPosition, TileAnimations>();
 
@@ -35,26 +38,18 @@ namespace CTC
         {
             base.LayoutSubviews();
 
-            if (Backbuffer == null)
+            if (Backbuffer.Id == 0)
             {
                 Renderer = new GameRenderer(Viewport.GameData);
-
-                Backbuffer = new RenderTarget2D(
-                    UIContext.Graphics.GraphicsDevice,
-                    480, 352, false,
-                    SurfaceFormat.Color, DepthFormat.None, 0,
-                    RenderTargetUsage.PreserveContents
-                );
+                // Phase 5: allocate a 480×352 off-screen render texture via Raylib.
+                Backbuffer = Raylib.LoadRenderTexture(480, 352);
             }
-
-            // Bounds = new Rectangle(0, 0, 883, 883 / 4 * 3);
         }
 
         public override void Update(GameTime Time)
         {
             base.Update(Time);
 
-            // TODO: cleanup animations outside view
             foreach (TileAnimations Animations in PlayingAnimations.Values)
             {
                 foreach (GameEffect Effect in Animations.Effects)
@@ -75,7 +70,6 @@ namespace CTC
             List<GameEffect> ToRemove = new List<GameEffect>();
             List<MapPosition> ToRemoveAnims = new List<MapPosition>();
 
-            // TODO: cleanup animations outside view
             foreach (KeyValuePair<MapPosition, TileAnimations> Anim in PlayingAnimations)
             {
                 ToRemove.Clear();
@@ -95,54 +89,56 @@ namespace CTC
                 PlayingAnimations.Remove(Position);
         }
 
-        private void UpdateName()
-        {
-            /*
-            if (Viewport.Player != null)
-                Name = Viewport.Player.Name + " (localhost:7171)";
-            else
-                Name = "No Player (localhost:7171)";
-             */
-        }
+        private void UpdateName() { }
 
         #endregion
 
 
         #region Drawing Code
 
-        protected override void DrawBackground(SpriteBatch CurrentBatch)
+        protected override void DrawBackground()
         {
-            // do nothing
+            // do nothing — the game scene fills the canvas
         }
 
-        public override void Draw(SpriteBatch CurrentBatch, Rectangle BoundingBox)
+        public override void Draw(Rectangle BoundingBox)
         {
-            // Create the batch if this is the first time we're being drawn
-            if (Batch == null)
-                Batch = new SpriteBatch(UIContext.Graphics.GraphicsDevice);
+            if (!Visible)
+                return;
+            if (!BoundingBox.Overlaps(ScreenBounds))
+                return;
 
-            // Draw the game to a backbuffer
-            UIContext.Graphics.GraphicsDevice.SetRenderTarget(Backbuffer);
-            Batch.Begin();
-            Renderer.DrawScene(Batch, UIContext.GameTime, Viewport, PlayingAnimations);
-            Batch.End();
-            UIContext.Graphics.GraphicsDevice.SetRenderTarget(null);
-            
-            // Then start the normal drawing cycle
-            BeginDraw();
+            // Ensure renderer and backbuffer exist (LayoutSubviews may not have run yet)
+            if (Backbuffer.Id == 0)
+                LayoutSubviews();
 
-            // Draw the backbuffer to the screen
-            Batch.Draw(Backbuffer, ScreenClientBounds, Color.White);
+            // 1. Render the game scene into the off-screen render texture.
+            Raylib.BeginTextureMode(Backbuffer);
+            Raylib.ClearBackground(Color.Black);
+            Renderer.DrawScene(UIContext.GameTime, Viewport, PlayingAnimations);
+            Raylib.EndTextureMode();
 
-            Vector2 Offset = new Vector2(ScreenClientBounds.X, ScreenClientBounds.Y);
-            Vector2 Scale = new Vector2(
-                Bounds.Width / 480f,
-                Bounds.Height / 352f
-            );
-            Renderer.DrawSceneForeground(Batch, Offset, Scale, UIContext.GameTime, Viewport, PlayingAnimations);
+            // 2. Blit the render texture to the screen inside this view's clip rect.
+            Rectangle scb = ScreenClientBounds;
+            Rectangle clip = GetClipRectangle();
+            Raylib.BeginScissorMode(clip.X, clip.Y, clip.Width, clip.Height);
 
-            DrawBorder(Batch);
-            EndDraw();
+            // OpenGL render textures have Y flipped — negate height in source rect to correct it.
+            Raylib.DrawTexturePro(
+                Backbuffer.Texture,
+                new Raylib_cs.Rectangle(0, 0, Backbuffer.Texture.Width, -Backbuffer.Texture.Height),
+                new Raylib_cs.Rectangle(scb.X, scb.Y, scb.Width, scb.Height),
+                Vector2.Zero, 0f, Color.White);
+
+            // 3. Draw creature bars and animated text (foreground overlay, same coordinate space).
+            Vector2 Offset = new Vector2(scb.X, scb.Y);
+            Vector2 Scale  = new Vector2(Bounds.Width / 480f, Bounds.Height / 352f);
+            Renderer.DrawSceneForeground(Offset, Scale, UIContext.GameTime, Viewport, PlayingAnimations);
+
+            // 4. Draw the window border.
+            DrawBorder();
+
+            Raylib.EndScissorMode();
         }
 
         #endregion
@@ -160,15 +156,12 @@ namespace CTC
 
         private void OnPlayerLogin(Packet props)
         {
-            // Next map description will contain the player
             Protocol.MapDescription.Add(OnMapDescription);
         }
 
         private void OnMapDescription(Packet props)
         {
-            // Update the name of the window
             UpdateName();
-            // Don't need to receive further updates
             Protocol.MapDescription.Remove(OnMapDescription);
         }
 

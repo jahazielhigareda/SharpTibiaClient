@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Raylib_cs;
+using Color = Raylib_cs.Color;
 
 namespace CTC
 {
