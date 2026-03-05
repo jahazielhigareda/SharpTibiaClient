@@ -13,8 +13,9 @@ namespace CTC
     public class TibiaGameData : IDisposable
     {
         // Phase 8: .dat signature constants.
-        public const UInt32 DatSignature74 = 0x41360000u; // Tibia 7.4 .dat signature
-        public const UInt32 DatSignature86 = 0x44380000u; // Tibia 8.6 .dat signature
+        public const UInt32 DatSignature74  = 0x41360000u; // Tibia 7.4 .dat signature
+        public const UInt32 DatSignature86  = 0x44380000u; // Tibia 8.6 .dat signature (pre-8.60)
+        public const UInt32 DatSignature860 = 0x4C2C7993u; // Tibia 8.60 .dat signature
 
         // Protocol version values used in version comparisons throughout this class.
         private const int ProtocolVersion74 = 740;
@@ -50,7 +51,7 @@ namespace CTC
             DatVersion = ReadU32(DatFile);
 
             // Phase 8: Determine protocol version from .dat signature.
-            if (DatVersion == DatSignature86)
+            if (DatVersion == DatSignature86 || DatVersion == DatSignature860)
                 Version = ProtocolVersion86;
             else if (DatVersion == DatSignature74)
                 Version = ProtocolVersion74;

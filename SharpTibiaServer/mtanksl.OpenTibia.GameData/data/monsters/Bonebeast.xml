@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Bonebeast" nameDescription="a bonebeast" race="undead" speed="218" experience="580" manacost="0">
+  <health now="515" max="515" />
+  <look typeex="0" type="101" head="0" body="0" legs="0" feet="0" corpse="3031" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="100" />
+    <element firePercent="-10" />
+    <element energyPercent="0" />
+    <element icePercent="0" />
+    <element deathPercent="100" />
+    <element holyPercent="-25" />
+    <element drownPercent="100" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="100" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Knooorrrrr!" />
+    <voice yell="0" sentence="Cccchhhhhhhhh!" />
+  </voices>
+  <defenses mitigation="1.15" defense="0" armor="40" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="200" />
+    <attack name="life drain" interval="3000" chance="70" min="25" max="47" />
+    <attack name="terra strike" interval="3000" chance="70" min="50" max="90" />
+
+
+    <attack name="paralyse" interval="3000" chance="70" />
+    <attack name="self healing" interval="2000" chance="50" min="30" max="60" />
+  </attacks>
+  <loot />
+</monster>

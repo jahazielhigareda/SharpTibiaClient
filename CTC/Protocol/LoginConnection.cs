@@ -36,13 +36,12 @@ namespace CTC
     ///   1. Connect to <c>host:7171</c> via TCP.
     ///   2. Read the 4-byte server challenge (used as part of checksum in older protocols;
     ///      in 8.6 this is read and discarded — the checksum field is 0).
-    ///   3. Build the 160-byte login packet:
+    ///   3. Build the login packet:
     ///        [2 bytes] packet length (LE)
-    ///        [4 bytes] Adler32 checksum (0 for login packet)
+    ///        [4 bytes] outer Adler32 checksum (covers type + OS + version + RSA block)
     ///        [1 byte ] packet type = 0x01
     ///        [2 bytes] OS (2 = Linux)
     ///        [2 bytes] client version = 860
-    ///        [4 bytes] data checksum (Adler32 of the RSA block; 0 for simplicity)
     ///        [128 bytes] RSA-encrypted block (see below)
     ///   RSA block layout (128 bytes, block[0] = 0x00):
     ///        [1  byte ] 0x00 padding sentinel
@@ -165,12 +164,17 @@ namespace CTC
 
         /// <summary>
         /// Assembles the full login packet sent to port 7171.
+        /// Format: [2B length][4B outer_adler32][1B type=0x01][2B OS][2B version][128B RSA]
+        /// The outer Adler32 covers bytes 4..136 (type + OS + version + RSA block).
         /// </summary>
         private static byte[] BuildLoginPacket(byte[] encryptedBlock)
         {
-            // Payload: type(1) + OS(2) + version(2) + checksum(4) + rsaBlock(128) = 137 bytes.
+            // Payload: outer_adler32(4) + type(1) + OS(2) + version(2) + rsaBlock(128) = 137 bytes.
             var payload = new byte[137];
             int p = 0;
+
+            // Reserve 4 bytes for the outer Adler32 checksum (filled after the rest is built).
+            p += 4;
 
             payload[p++] = 0x01;                              // packet type
             payload[p++] = (byte)(Os & 0xFF);                 // OS lo
@@ -178,14 +182,14 @@ namespace CTC
             payload[p++] = (byte)(ClientVer & 0xFF);          // version lo
             payload[p++] = (byte)(ClientVer >> 8);            // version hi
 
-            // 4-byte Adler32 of the RSA block (sent before encryption check).
-            uint cksum = Adler32.Compute(encryptedBlock);
-            payload[p++] = (byte)(cksum & 0xFF);
-            payload[p++] = (byte)((cksum >>  8) & 0xFF);
-            payload[p++] = (byte)((cksum >> 16) & 0xFF);
-            payload[p++] = (byte)((cksum >> 24) & 0xFF);
-
             Buffer.BlockCopy(encryptedBlock, 0, payload, p, 128);
+
+            // Outer Adler32 covers type + OS + version + RSA block (payload[4..136]).
+            uint cksum = Adler32.Compute(payload, 4, 133);
+            payload[0] = (byte)(cksum         & 0xFF);
+            payload[1] = (byte)((cksum >>  8) & 0xFF);
+            payload[2] = (byte)((cksum >> 16) & 0xFF);
+            payload[3] = (byte)((cksum >> 24) & 0xFF);
 
             // Prepend 2-byte little-endian packet length.
             var packet = new byte[2 + payload.Length];

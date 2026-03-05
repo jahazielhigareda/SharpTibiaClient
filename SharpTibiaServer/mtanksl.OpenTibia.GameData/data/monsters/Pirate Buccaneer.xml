@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Pirate Buccaneer" nameDescription="a pirate buccaneer" race="blood" speed="218" experience="250" manacost="595">
+  <health now="425" max="425" />
+  <look typeex="0" type="97" head="0" body="0" legs="0" feet="0" corpse="6080" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="1" />
+    <flag convinceable="1" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="50" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="-5" />
+    <element earthpercent="10" />
+    <element firePercent="-5" />
+    <element energyPercent="-5" />
+    <element icePercent="-5" />
+    <element deathPercent="-5" />
+    <element holyPercent="10" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Hiyaa" />
+    <voice yell="0" sentence="Give up!" />
+    <voice yell="0" sentence="Plundeeeeer!" />
+  </voices>
+  <defenses mitigation="1.04" defense="0" armor="16" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="160" />
+    <attack name="knives" interval="3000" chance="70" min="0" max="100" />
+  </attacks>
+  <loot />
+</monster>

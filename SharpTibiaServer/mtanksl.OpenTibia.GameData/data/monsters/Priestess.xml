@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Priestess" nameDescription="a priestess" race="blood" speed="170" experience="420" manacost="0">
+  <health now="390" max="390" />
+  <look typeex="0" type="58" head="0" body="0" legs="0" feet="0" corpse="6081" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="1" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="4" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="-10" />
+    <element earthpercent="70" />
+    <element firePercent="40" />
+    <element energyPercent="0" />
+    <element icePercent="0" />
+    <element deathPercent="10" />
+    <element holyPercent="-10" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Your energy is mine." />
+    <voice yell="0" sentence="Throw the soul on the altar!" />
+    <voice yell="0" sentence="Now your life is come to the end, hahahaha!" />
+  </voices>
+  <defenses mitigation="1.32" defense="0" armor="30" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="75" />
+    <attack name="death strike" interval="3000" chance="70" min="0" max="120" />
+    <attack name="mana drain" interval="3000" chance="70" min="2" max="170" />
+    <attack name="self healing" interval="2000" chance="50" min="34" max="56" />
+
+  </attacks>
+  <loot />
+</monster>

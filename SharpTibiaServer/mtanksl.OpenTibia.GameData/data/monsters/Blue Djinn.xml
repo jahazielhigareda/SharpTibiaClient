@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Blue Djinn" nameDescription="a blue djinn" race="blood" speed="220" experience="215" manacost="0">
+  <health now="330" max="330" />
+  <look typeex="0" type="80" head="0" body="0" legs="0" feet="0" corpse="6020" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="0" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="0" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="0" />
+    <element firePercent="80" />
+    <element energyPercent="50" />
+    <element icePercent="-10" />
+    <element deathPercent="-13" />
+    <element holyPercent="20" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Simsalabim" />
+    <voice yell="0" sentence="Wishes can come true." />
+    <voice yell="0" sentence="Be careful what you wish for." />
+    <voice yell="0" sentence="Feel the power of my magic, tiny mortal!" />
+  </voices>
+  <defenses mitigation="0.78" defense="0" armor="20" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="100" />
+    <attack name="flame strike" interval="3000" chance="70" min="45" max="75" />
+    <attack name="energy strike" interval="3000" chance="70" min="50" max="90" />
+    <attack name="life drain" interval="3000" chance="70" min="55" max="105" />
+
+
+
+  </attacks>
+  <loot />
+</monster>

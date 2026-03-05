@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Parrot" nameDescription="a parrot" race="blood" speed="196" experience="0" manacost="250">
+  <health now="25" max="25" />
+  <look typeex="0" type="217" head="0" body="0" legs="0" feet="0" corpse="6056" />
+  <flags>
+    <flag summonable="1" />
+    <flag attackable="1" />
+    <flag hostile="0" />
+    <flag illusionable="1" />
+    <flag convinceable="1" />
+    <flag pushable="1" />
+    <flag canpushitems="0" />
+    <flag canpushcreatures="0" />
+    <flag targetdistance="1" />
+    <flag runonhealth="25" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="0" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="0" />
+    <element firePercent="0" />
+    <element energyPercent="0" />
+    <element icePercent="0" />
+    <element deathPercent="0" />
+    <element holyPercent="0" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Tarrrrp?" />
+    <voice yell="0" sentence="Screeech!" />
+    <voice yell="1" sentence="BR? PL? SWE?" />
+    <voice yell="0" sentence="Neeeewbiiieee!" />
+    <voice yell="0" sentence="Hunterrr ish PK!" />
+    <voice yell="0" sentence="Leeave orrr hunted!!" />
+    <voice yell="0" sentence="Shhtop whining! Rrah" />
+    <voice yell="0" sentence="I'm heeerrre! Screeeech!" />
+    <voice yell="0" sentence="You powerrrrrrabuserrrrr!" />
+    <voice yell="0" sentence="Hope you die and loooosh it!" />
+    <voice yell="0" sentence="Blesshhh my stake! Screeech!" />
+    <voice yell="0" sentence="You advanshed, you advanshed!" />
+    <voice yell="0" sentence="You are corrrrupt! Corrrrupt!" />
+  </voices>
+  <defenses mitigation="0.15" defense="0" armor="2" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="5" />
+  </attacks>
+  <loot />
+</monster>

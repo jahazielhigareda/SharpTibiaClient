@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Black Knight" nameDescription="a black knight" race="blood" speed="250" experience="1600" manacost="0">
+  <health now="1800" max="1800" />
+  <look typeex="0" type="131" head="95" body="95" legs="95" feet="95" corpse="6080" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="10" />
+    <element earthpercent="100" />
+    <element firePercent="95" />
+    <element energyPercent="80" />
+    <element icePercent="100" />
+    <element deathPercent="20" />
+    <element holyPercent="100" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="1" sentence="MINE!" />
+    <voice yell="1" sentence="NO MERCY!" />
+    <voice yell="1" sentence="NO PRISONERS!" />
+    <voice yell="0" sentence="By Bolg's blood!" />
+    <voice yell="0" sentence="You're no match for me!" />
+  </voices>
+  <defenses mitigation="0" defense="0" armor="42" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="300" />
+    <attack name="spears" interval="3000" chance="70" min="0" max="200" />
+  </attacks>
+  <loot />
+</monster>

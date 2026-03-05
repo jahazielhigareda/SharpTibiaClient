@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Massive Water Elemental" nameDescription="a massive water elemental" race="undead" speed="430" experience="1100" manacost="0">
+  <health now="1250" max="1250" />
+  <look typeex="0" type="11" head="0" body="0" legs="0" feet="0" corpse="2025" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="1" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="40" />
+    <element earthpercent="100" />
+    <element firePercent="100" />
+    <element energyPercent="-25" />
+    <element icePercent="100" />
+    <element deathPercent="50" />
+    <element holyPercent="50" />
+    <element drownPercent="100" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10" />
+  <defenses mitigation="1.32" defense="0" armor="45" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="230" />
+
+
+    <attack name="ice strike" interval="3000" chance="70" min="170" max="210" />
+    <attack name="self healing" interval="2000" chance="50" min="25" max="40" />
+  </attacks>
+  <loot />
+</monster>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Ice Witch" nameDescription="an ice witch" race="blood" speed="228" experience="580" manacost="0">
+  <health now="650" max="650" />
+  <look typeex="0" type="149" head="0" body="9" legs="86" feet="86" corpse="6081" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="1" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="0" />
+    <flag targetdistance="4" />
+    <flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="40" />
+    <element firePercent="50" />
+    <element energyPercent="-10" />
+    <element icePercent="100" />
+    <element deathPercent="-10" />
+    <element holyPercent="30" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Freeze!" />
+    <voice yell="0" sentence="So you think you are cool?" />
+    <voice yell="0" sentence="I hope it is not too cold for you! HeHeHe." />
+  </voices>
+  <defenses mitigation="0.91" defense="0" armor="70" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="60" />
+    <attack name="ice wave" interval="3000" chance="70" min="50" max="124" />
+    <attack name="ice strike" interval="3000" chance="70" min="51" max="99" />
+    <attack name="self healing" interval="2000" chance="50" min="90" max="120" />
+    <attack name="paralyse" interval="3000" chance="70" />
+
+  </attacks>
+  <loot />
+</monster>

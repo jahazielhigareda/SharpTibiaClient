@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Fire Devil" nameDescription="a fire devil" race="blood" speed="196" experience="145" manacost="530">
+  <health now="200" max="200" />
+  <look typeex="0" type="40" head="0" body="0" legs="0" feet="0" corpse="5985" />
+  <flags>
+	<flag summonable="1" />
+	<flag attackable="1" />
+	<flag hostile="1" />
+	<flag illusionable="1" />
+	<flag convinceable="1" />
+	<flag pushable="0" />
+	<flag canpushitems="1" />
+	<flag canpushcreatures="0" />
+	<flag targetdistance="4" />
+	<flag runonhealth="0" />
+  </flags>
+  <immunities>
+    <immunity paralyze="0" />
+    <immunity invisible="0" />
+  </immunities>
+  <elements>
+    <element physicalPercent="10" />
+    <element earthpercent="20" />
+    <element firePercent="100" />
+    <element energyPercent="30" />
+    <element icePercent="-20" />
+    <element deathPercent="20" />
+    <element holyPercent="-10" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="0" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Hot, eh?" />
+    <voice yell="0" sentence="Hell, oh hell!" />
+  </voices>
+  <defenses mitigation="0.05" defense="0" armor="13" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="35" />
+    <attack name="flame strike" interval="3000" chance="70" min="60" max="95" />
+    <attack name="fireball" interval="3000" chance="70" min="60" max="95" />
+  </attacks>
+  <loot />
+</monster>

@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="items">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="item" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence minOccurs="0">
+              <xs:element name="attribute" maxOccurs="unbounded">
+                <xs:complexType>                 
+                  <xs:attribute name="key" type="AttributeKey" use="required" />
+                  <xs:attribute name="value" type="xs:string" use="required" />
+                </xs:complexType>                
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:unsignedShort" use="required" />
+            <xs:attribute name="article" type="xs:string" use="optional" />
+            <xs:attribute name="name" type="xs:string" use="optional" />
+            <xs:attribute name="plural" type="xs:string" use="optional" />
+            <xs:attribute name="editorsuffix" type="xs:string" use="optional" />
+            <xs:attribute name="editorcategory" type="xs:string" use="optional" />
+          </xs:complexType>
+          <!--<xs:unique name="uniqueKey">
+            <xs:selector xpath="attribute"/>
+            <xs:field xpath="@key"/>
+          </xs:unique>-->
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="AttributeKey">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="article"/>
+      <xs:enumeration value="name"/>
+      <xs:enumeration value="plural"/>
+      <xs:enumeration value="description"/>
+      <xs:enumeration value="runespellname"/>
+      <xs:enumeration value="weight"/>
+      <xs:enumeration value="armor"/>
+      <xs:enumeration value="defense"/>
+      <xs:enumeration value="defensemodifier"/>
+      <xs:enumeration value="attack"/>
+      <xs:enumeration value="attackmodifierearth"/>
+      <xs:enumeration value="attackmodifierfire"/>
+      <xs:enumeration value="attackmodifierenergy"/>
+      <xs:enumeration value="attackmodifierice"/>
+      <xs:enumeration value="attackmodifierdeath"/>
+      <xs:enumeration value="attackmodifierholy"/>
+      <xs:enumeration value="attackmodifierdrown"/>
+      <xs:enumeration value="attackmodifiermanadrain"/>
+      <xs:enumeration value="attackmodifierlifedrain"/>
+      <xs:enumeration value="blockprojectile"/>
+      <xs:enumeration value="floorchange"/>
+      <xs:enumeration value="corpsetype"/>
+      <xs:enumeration value="containersize"/>
+      <xs:enumeration value="weapontype"/>
+      <xs:enumeration value="ammotype"/>
+      <xs:enumeration value="shoottype"/>
+      <xs:enumeration value="effect"/>
+      <xs:enumeration value="range"/>
+      <xs:enumeration value="charges"/>
+      <xs:enumeration value="duration"/>
+      <xs:enumeration value="decayto"/>
+      <xs:enumeration value="slottype"/>
+      <xs:enumeration value="showcharges"/>
+      <xs:enumeration value="showduration"/>
+      <xs:enumeration value="breakchance"/>
+      <xs:enumeration value="ammoaction"/>
+      <xs:enumeration value="hitchance"/>
+      <xs:enumeration value="maxhitchance"/>
+      <xs:enumeration value="readable"/>
+      <xs:enumeration value="writeable"/>
+      <xs:enumeration value="absorbpercentphysical"/>
+      <xs:enumeration value="absorbpercentearth"/>
+      <xs:enumeration value="absorbpercentfire"/>
+      <xs:enumeration value="absorbpercentenergy"/>
+      <xs:enumeration value="absorbpercentice"/>
+      <xs:enumeration value="absorbpercentdeath"/>
+      <xs:enumeration value="absorbpercentholy"/>
+      <xs:enumeration value="absorbpercentdrown"/>
+      <xs:enumeration value="absorbpercentmanadrain"/>
+      <xs:enumeration value="absorbpercentlifedrain"/>
+      <xs:enumeration value="speedmodifier"/>
+      <xs:enumeration value="skillmodifiermagiclevel"/>
+      <xs:enumeration value="skillmodifierfist"/>
+      <xs:enumeration value="skillmodifiersword"/>
+      <xs:enumeration value="skillmodifieraxe"/>
+      <xs:enumeration value="skillmodifierclub"/>
+      <xs:enumeration value="skillmodifierdistance"/>
+      <xs:enumeration value="skillmodifiershield"/>
+      <xs:enumeration value="skillmodifierfish"/>
+      
+      <!-- unused -->
+      <xs:enumeration value="type"/>
+      <xs:enumeration value="field"/>
+      <xs:enumeration value="replaceable"/>
+      <xs:enumeration value="corpsetype"/>
+      <xs:enumeration value="femalesleeper"/>
+      <xs:enumeration value="fluidsource"/>
+      <xs:enumeration value="malesleeper"/>
+      <xs:enumeration value="maxtextlen"/>
+      <xs:enumeration value="partnerdirection"/>
+      <xs:enumeration value="rotateto"/>
+      <xs:enumeration value="showcount"/>
+      <xs:enumeration value="stopduration"/>
+      <xs:enumeration value="transformdeequipto"/>
+      <xs:enumeration value="transformequipto"/>
+      <xs:enumeration value="writeonceitemid"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

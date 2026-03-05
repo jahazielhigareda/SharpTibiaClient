@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<monster name="Diabolic Imp" nameDescription="a diabolic imp" race="fire" speed="210" experience="2900" manacost="0">
+  <health now="1950" max="1950" />
+  <look typeex="0" type="237" head="0" body="0" legs="0" feet="0" corpse="6364" />
+  <flags>
+    <flag summonable="0" />
+    <flag attackable="1" />
+    <flag hostile="1" />
+    <flag illusionable="0" />
+    <flag convinceable="0" />
+    <flag pushable="0" />
+    <flag canpushitems="1" />
+    <flag canpushcreatures="1" />
+    <flag targetdistance="4" />
+    <flag runonhealth="400" />
+  </flags>
+  <immunities>
+    <immunity paralyze="1" />
+    <immunity invisible="1" />
+  </immunities>
+  <elements>
+    <element physicalPercent="0" />
+    <element earthpercent="50" />
+    <element firePercent="100" />
+    <element energyPercent="0" />
+    <element icePercent="-10" />
+    <element deathPercent="10" />
+    <element holyPercent="-5" />
+    <element drownPercent="0" />
+    <element manaDrainPercent="100" />
+    <element lifeDrainPercent="100" />
+  </elements>
+  <voices interval="5000" chance="10">
+    <voice yell="0" sentence="Muahaha!" />
+    <voice yell="0" sentence="He he he." />
+  </voices>
+  <defenses mitigation="1.46" defense="0" armor="29" />
+  <changetargetstrategy interval="5000" chance="10" />
+  <targetstrategy nearest="0" weakest="0" mostdamage="0" random="100" />
+  <attacks>
+    <attack name="melee" interval="2000" chance="90" min="0" max="240" />
+    <attack name="flame strike" interval="3000" chance="70" min="100" max="240" />
+    <attack name="fireball" interval="3000" chance="70" min="300" max="430" />
+        
+    <attack name="invisible" interval="3000" chance="30" />
+    <attack name="haste" interval="2000" chance="50" />
+    <attack name="self healing" interval="2000" chance="50" min="650" max="800" />
+  </attacks>
+  <loot />
+</monster>
