@@ -77,6 +77,12 @@ namespace CTC
             Clients.Add(State);
             ActiveClient = State;
 
+            // Show game UI panels now that a client has entered the game.
+            Frame.Visible   = true;
+            Sidebar.Visible = true;
+            Chat.Visible    = true;
+            Hotbar.Visible  = true;
+
             // Read in some state (in case the game was fast-forwarded)
             foreach (ClientContainer Container in State.Viewport.Containers.Values)
                 OnOpenContainer(State.Viewport, Container);
@@ -283,17 +289,21 @@ namespace CTC
             Frame.Bounds.Width = 800;
             Frame.Bounds.Height = 600;
             Frame.ZOrder = -1;
+            Frame.Visible = false;
             AddSubview(Frame);
 
             Sidebar = new GameSidebar(this);
+            Sidebar.Visible = false;
             AddSubview(Sidebar);
 
             Chat = new ChatPanel();
             Chat.Bounds.Height = 180;
+            Chat.Visible = false;
             AddSubview(Chat);
 
             // Phase 10: HotbarPanel — 10 F-key slots above the chat panel.
             Hotbar = new HotbarPanel();
+            Hotbar.Visible = false;
             AddSubview(Hotbar);
         }
 
